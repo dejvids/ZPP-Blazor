@@ -1,0 +1,61 @@
+﻿@page "/zajecia/{Id}"
+@layout MainLayout
+@inherits LectureComponent
+<style>
+    h2 {
+        font-size: 18pt;
+    }
+
+    #details {
+        margin-top: 2rem;
+    }
+
+    #description {
+        margin-top: 2rem;
+    }
+
+    h3 {
+        font-size: 12pt;
+    }
+
+    .header-bold {
+        font-weight: bold;
+    }
+
+    .link-back {
+        font-size: 16pt;
+        margin-bottom: 1em;
+        padding-left: 0px;
+    }
+
+   .link-back:hover {
+       color: #050709;
+   }
+
+    .margin-left-std {
+        margin-left: 1em;
+    }
+</style>
+
+<div class="container container-margin-top">
+    <NavLink class="btn link-back" href="/zajecia"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="margin-left-std">Powrót do listy</span></NavLink>
+    <h2>@CurrentLecture.Name</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="details">
+                <h3><span class="header-bold"><i class="fa fa-calendar" aria-hidden="true"></i> Data: </span>@(CurrentLecture.Date.ToString("dd-MM-yyyy HH:mm"))</h3>
+                <h3><span class="header-bold"><i class="fa fa-map-marker" aria-hidden="true"></i> Miejsce: </span>@CurrentLecture.Place</h3>
+                <h3><span class="header-bold"><i class="fa fa-graduation-cap" aria-hidden="true"></i> Prowadzący: </span>@CurrentLecture.LecturerFullName</h3>
+                <h3><span class="header-bold"><i class="fa fa-users" aria-hidden="true"></i> L. uczestników: </span>@CurrentLecture.NumberOfParticipants.ToString()</h3>
+            </div>
+            <div id="description">
+                <h2>Opis zajęć</h2>
+                <p>@CurrentLecture.Description</p>
+            </div>
+            <button class="btn btn-primary btn-lg btn-ok">Zapisz się!</button>
+        </div>
+        <div class="col-md-6">
+            <!-- <div id="googleMap" style="width:100%;height:400px;"></div> -->
+        </div>
+    </div>
+</div>

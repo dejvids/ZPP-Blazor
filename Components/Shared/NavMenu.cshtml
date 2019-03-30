@@ -1,0 +1,72 @@
+﻿@inherits ZPP_Blazor.Components.BaseComponent
+@inject LocalStorage localStorage
+@using ZPP_Blazor.Models;
+@using ZPP_Blazor.Extensions;
+<style>
+    a.navbar-brand {
+        white-space: normal;
+        text-align: center;
+        word-break: break-all;
+    }
+
+    html {
+        font-size: 14px;
+    }
+
+    @@media (min-width: 768px) {
+        html {
+            font-size: 16px;
+        }
+    }
+
+    nav {
+        margin-bottom: 0px;
+    }
+
+    .box-shadow {
+        box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    }
+</style>
+<header>
+    <nav class='navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary'>
+        <div class="container">
+            <NavLink class="navbar-brand" href="/">ZPP</NavLink>
+            <button class="navbar-toggler" type="button" data-target=".navbar-collapse" aria-label="Toggle navigation"
+                    onclick="@Toggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse @(IsExpanded ? "show" : null)">
+                <ul class="navbar-nav flex-grow">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="zajecia">Zajęcia</NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="logowanie" style="@(!IsSigned ? "visibility:visible;" : "display:none;")">Logowanie</NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="rejestracja" style="@(!IsSigned ? "visibility:visible;" : "display:none;")">Rejestracja</NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" style="@(IsSigned ? "visibility:visible;" : "visibility:hidden;")" href="profil">Profil</NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" style="@(IsSigned ? "visibility:visible;" : "visibility:hidden;")" href="wyloguj">Wyloguj</NavLink>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+@functions{
+    public bool IsExpanded { get; set; }
+
+    public void Toggle()
+    {
+        this.IsExpanded = !this.IsExpanded;
+    }
+
+    public void Collapse()
+    {
+        this.IsExpanded = false;
+    }
+}

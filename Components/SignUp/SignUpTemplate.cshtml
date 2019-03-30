@@ -1,0 +1,67 @@
+﻿@page "/rejestracja"
+@layout MainLayout
+@inherits SignUpComponent
+
+<style>
+  
+    div .light-box {
+        border: solid #ddd 1px;
+        border-radius: 2%;
+        padding: 2rem;
+    }
+
+    .btn-max-width {
+        width: 100%;
+    }
+
+
+    .btn-content {
+        margin-left: 0.5rem
+    }
+</style>
+<div class="container">
+    <div class="row container-margin-top">
+        <div class="col-md-6 offset-md-3 light-box">
+            <div style="@(SuccessfullyRegistered ? "visibility:visible;" : "display:none;")">
+                <div class="alert alert-success" style="@(IsAlertVisible ? "visibility:visible;" : "display:none;")" role="alert">@Message</div>
+                <p>Możesz teraz zalgować się na swoje konto. W tym celu przejdź do strony logowania klikając w link poniżej</p>
+                <NavLink class="btn btn-primary" href="logowanie">Logowanie</NavLink>
+            </div>
+            <form style="@(!SuccessfullyRegistered ? "visibility:visible;" : "display:none;")">
+                <h2>Załóż konto</h2>
+                <div class="alert alert-danger" style="@(IsAlertVisible ? "visibility:visible;" : "display:none;")" role="alert">@Message</div>
+                <div class="form-group">
+                    <label for="login">Login</label>
+                    <input type="text" id="login" placeholder="Podaj login" class="form-control" bind="Login" required/>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="Podaj adres e-mail" class="form-control" bind="Email" required/>
+                </div>
+                <div class="form-group">
+                    <label for="name">Imię</label>
+                    <input type="text" id="name" placeholder="Podaj imię" class="form-control" bind="Name"/>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nazwisko </label>
+                    <input type="text" id="name" placeholder="Podaj nazwisko" class="form-control" bind="Surname"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Hasło</label>
+                    <input type="password" id="password" placeholder="Podaj hasło" class="form-control" bind="Password" required/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Powtórz hasło</label>
+                    <input type="password" id="rep_password" placeholder="Powtórz hasło" class="form-control" bind="RepeatedPassword" required/>
+                </div>
+                <button class="btn btn-primary btn-lg btn-max-width" type="button" onclick=@SignUpAsync>Zarejestruj</button>
+                <div class="container-margin-top">
+                   <p>
+                       Już mam konto. 
+                       <NavLink class="btn" href="/logowanie">Zaloguj</NavLink>
+                   </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
