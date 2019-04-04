@@ -58,7 +58,6 @@ namespace ZPP_Blazor.Components
             {
                 this.IsSigned = false;
             }
-            Console.WriteLine("Base Component issigned = "+ IsSigned);
              this.StateHasChanged();
         }
     }

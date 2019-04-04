@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZPP_Blazor.Models;
+using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Lecture
 {
     public class LectureComponent : BaseComponent
     {
+        [Inject]
+        protected ILectureService _lectureService { get; set; }
         public Models.Lecture CurrentLecture { get; set; } = new Models.Lecture();
 
         [Parameter]
@@ -22,11 +25,16 @@ namespace ZPP_Blazor.Components.Lecture
             await base.OnInitAsync();
 
             Console.WriteLine("Id = " + Id);
-            string endpoint = $"{AppCtx.BaseAddress}/api/lectures/{Id}";
-            Console.WriteLine(endpoint);
-            var result = await Http.GetAsync(endpoint);
-            string content = await result.Content.ReadAsStringAsync();
-            CurrentLecture = Json.Deserialize<Models.Lecture>(content);
+            try
+            {
+                CurrentLecture = await _lectureService.GetLecture(int.Parse(Id));
+                StateHasChanged();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("Nie udało siępobrać szczegółów zajęć");
+            }
         }
     }
 }

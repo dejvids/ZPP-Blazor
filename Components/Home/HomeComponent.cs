@@ -5,14 +5,28 @@ using Microsoft.JSInterop;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Blazor;
+using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Home
 {
     public class HomeComponent : BaseComponent
     {
+        [Inject]
+        protected ILectureService _lectureService { get; set; }
         public List<Models.Lecture> Lectures { get; set; }
-        public List<Models.Lecture> PromotingLectures { get; set; }
+        public IEnumerable<Models.Lecture> PromotingLectures { get; set; }
+
+        public Models.Lecture FirstPromoting
+            => PromotingLectures?.ElementAt<Models.Lecture>(0);
+        public Models.Lecture SecondPromoting
+           => PromotingLectures?.ElementAt<Models.Lecture>(1);
+        public Models.Lecture ThirdPromoting
+           => PromotingLectures?.ElementAt<Models.Lecture>(2);
+        public List<Models.Lecture> SearchedLectures { get; set; }
         public bool DataLoaded { get; set; }
+        public bool Searched { get; set; }
+        public string Phrase { get; set; }
 
         public HomeComponent()
         { }
@@ -20,27 +34,81 @@ namespace ZPP_Blazor.Components.Home
         protected override async Task OnInitAsync()
         {
             PromotingLectures = new List<Models.Lecture> { new Models.Lecture(), new Models.Lecture(), new Models.Lecture() };
+            SearchedLectures = new List<Models.Lecture>();
             await base.OnInitAsync();
             Console.WriteLine("OnInit Home component");
             if (Http == null)
             {
                 Console.WriteLine("Http is null");
             }
-            Console.WriteLine(AppCtx.BaseAddress);
-            var response = await Http.GetAsync("/api/lectures");
-            DataLoaded = true;
-            if (response == null)
+            try
             {
-                Console.WriteLine("Result is null");
+                PromotingLectures = await _lectureService.GetPromotingLectures();
+                DataLoaded = true;
+                StateHasChanged();
             }
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            catch (Exception ex)
             {
-                Lectures = Json.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
-                Console.WriteLine("Pobranych wyk�ad�w " + Lectures.Count);
-                if (Lectures.Count >= 3)
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async Task Search()
+        {
+            Console.WriteLine("Submit " + Phrase);
+            if (string.IsNullOrEmpty(Phrase) || Phrase.Length < 3)
+            {
+                Searched = false;
+                return;
+            }
+
+            try
+            {
+                var lectures = await _lectureService.GetLectures(1, Phrase, Enums.OrderOption.name);
+                Console.WriteLine("Znalezionych wykładów " + lectures.Count());
+                if (lectures.Count() >= 1)
                 {
-                    PromotingLectures = Lectures.Take(3).ToList();
+                    SearchedLectures = lectures.Take(4).ToList();
+                    Searched = true;
+                    this.StateHasChanged();
                 }
+                else
+                {
+                    SearchedLectures.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async void OnKeyPressed(UIKeyboardEventArgs e)
+        {
+            this.StateHasChanged();
+            if (string.IsNullOrEmpty(Phrase) || Phrase.Count() < 4)
+            {
+                Searched = false;
+                StateHasChanged();
+            }
+            if (e.Key.Equals("Enter", StringComparison.InvariantCultureIgnoreCase) && Phrase?.Count() >= 3)
+            {
+                this.StateHasChanged();
+                Console.WriteLine("Phrase is " + Phrase);
+                Console.WriteLine(Phrase);
+                await Search();
+                Console.WriteLine("Now phrase is " + Phrase);
+            }
+            else
+            {
+                Console.WriteLine("Key pressed ");
+                if (Phrase?.Count() >= 3)
+                {
+                    this.StateHasChanged();
+                    Console.WriteLine("Search for " + Phrase);
+                    await Search();
+                }
+
             }
         }
     }

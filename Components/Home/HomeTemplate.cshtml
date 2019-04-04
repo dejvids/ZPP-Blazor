@@ -1,4 +1,5 @@
 @page "/"
+@using ZPP_Blazor.Models;
 @layout MainLayout
 @inherits HomeComponent
 <style>
@@ -53,6 +54,15 @@
     .main-panel {
         margin-top: 5em;
     }
+
+    .dialog-box-max-width {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    .align-right {
+        float: right;
+    }
 </style>
 <header class=" row masthead text-white text-center">
     <div class="overlay"></div>
@@ -62,16 +72,22 @@
                 <h1 class="mb-5">Znajdź dodatkowe zajęcia dla siebie!</h1>
             </div>
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                <form>
-                    <div class="form-row">
-                        <div class="col-12 col-md-9 mb-2 mb-md-0">
-                            <input type="email" class="form-control form-control-lg" placeholder="Czego szukasz?">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <button type="submit" class="btn btn-block btn-lg btn-primary">Wyszukaj</button>
+                <div class="form-row">
+                    <div class="col-md-9 mb-2 mb-md-0">
+                        <input type="text" class="form-control form-control-lg" bind="Phrase" onkeypress="@OnKeyPressed" placeholder="Czego szukasz?" />
+                        <div class="dropdown-menu @(Searched ? "show" : " ") dialog-box-max-width form-group">
+                                @foreach (var lecture in SearchedLectures)
+                                {
+                                        <a class="dropdown-item" href="/zajecia/@lecture.Id">@lecture.Name</a>
+                                }
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/zajecia?wyszukaj=@Phrase">Więcej...</a>
                         </div>
                     </div>
-                </form>
+                    <div class="col-md-3">
+                        <button type="button" onclick="@Search" class="btn btn-block btn-lg btn-primary" data-toggle="dropdown">Wyszukaj</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -81,12 +97,13 @@
         <div class="col-md-4 mb-5">
             <div class="card h-100">
                 <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@PromotingLectures[0]?.Name</h2>
-                    <p class="card-text">@PromotingLectures[0]?.Description</p>
+                    <h2 class="card-title">@FirstPromoting?.Name</h2>
+                    <p class="card-text">@FirstPromoting?.Description</p>
                 </div>
                 <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
                 <div class="card-footer">
-                    <a href="/zajecia/@PromotingLectures[0]?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                    <a href="/zajecia/@FirstPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                    <span class="align-right">Data: @(FirstPromoting.Date == default(DateTime) ? "__-__-____" : FirstPromoting.Date.ToString("dd-MM-yyyy"))</span>
                 </div>
             </div>
         </div>
@@ -94,12 +111,13 @@
         <div class="col-md-4 mb-5">
             <div class="card h-100">
                 <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@PromotingLectures[1]?.Name</h2>
-                    <p class="card-text">@PromotingLectures[1]?.Description</p>
+                    <h2 class="card-title">@SecondPromoting?.Name</h2>
+                    <p class="card-text">@SecondPromoting?.Description</p>
                 </div>
                 <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
                 <div class="card-footer">
-                    <a href="/zajecia/@PromotingLectures[1]?.Id"  style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")"  class="btn btn-primary btn-sm">Więcej</a>
+                    <a href="/zajecia/@SecondPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                    <span class="align-right">Data: @(SecondPromoting.Date == default(DateTime) ? "__-__-____" : SecondPromoting.Date.ToString("dd-MM-yyyy"))</span>
                 </div>
             </div>
         </div>
@@ -107,12 +125,13 @@
         <div class="col-md-4 mb-5">
             <div class="card h-100">
                 <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@PromotingLectures[2]?.Name</h2>
-                    <p class="card-text">@PromotingLectures[2]?.Description</p>
+                    <h2 class="card-title">@ThirdPromoting?.Name</h2>
+                    <p class="card-text">@ThirdPromoting?.Description</p>
                 </div>
                 <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
                 <div class="card-footer">
-                    <a href="/zajecia/@PromotingLectures[2]?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")"  class="btn btn-primary btn-sm">Więcej</a>
+                    <a href="/zajecia/@ThirdPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                    <span class="align-right">Data: @(ThirdPromoting.Date == default(DateTime) ? "__-__-____" : ThirdPromoting.Date.ToString("dd-MM-yyyy"))</span>
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ namespace ZPP_Blazor
             // Both SessionStorage and LocalStorage are registered
             services.AddStorage();
             services.AddTransient<SignInService>();
+            services.AddTransient<ILectureService,LectureService>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)
