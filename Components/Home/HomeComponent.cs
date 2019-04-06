@@ -85,7 +85,7 @@ namespace ZPP_Blazor.Components.Home
 
         public async void OnKeyPressed(UIKeyboardEventArgs e)
         {
-            this.StateHasChanged();
+            Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
             if (string.IsNullOrEmpty(Phrase) || Phrase.Count() < 4)
             {
                 Searched = false;
@@ -93,20 +93,19 @@ namespace ZPP_Blazor.Components.Home
             }
             if (e.Key.Equals("Enter", StringComparison.InvariantCultureIgnoreCase) && Phrase?.Count() >= 3)
             {
-                this.StateHasChanged();
-                Console.WriteLine("Phrase is " + Phrase);
-                Console.WriteLine(Phrase);
                 await Search();
-                Console.WriteLine("Now phrase is " + Phrase);
+                Searched = true;
+                StateHasChanged();
             }
             else
             {
-                Console.WriteLine("Key pressed ");
+                Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
+                Console.WriteLine("Key pressed, phrase="+Phrase);
                 if (Phrase?.Count() >= 3)
                 {
-                    this.StateHasChanged();
-                    Console.WriteLine("Search for " + Phrase);
                     await Search();
+                    Searched = true;
+                    StateHasChanged();
                 }
 
             }
