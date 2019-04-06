@@ -16,7 +16,7 @@ namespace ZPP_Blazor.Components.Lecture
         public Models.Lecture CurrentLecture { get; set; } = new Models.Lecture();
 
         [Parameter]
-        public string Id { get; set; }
+        protected string Id { get; set; }
         public LectureComponent()
         {
         }
@@ -30,10 +30,10 @@ namespace ZPP_Blazor.Components.Lecture
                 CurrentLecture = await _lectureService.GetLecture(int.Parse(Id));
                 StateHasChanged();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw new Exception("Nie udało siępobrać szczegółów zajęć");
+                UriHelper.NavigateTo("/zajecia/strona/1");
             }
         }
     }

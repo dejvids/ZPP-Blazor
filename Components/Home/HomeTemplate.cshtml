@@ -63,6 +63,7 @@
     .align-right {
         float: right;
     }
+
 </style>
 <header class=" row masthead text-white text-center">
     <div class="overlay"></div>
@@ -74,14 +75,14 @@
             <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                 <div class="form-row">
                     <div class="col-md-9 mb-2 mb-md-0">
-                        <input type="text" class="form-control form-control-lg" bind="Phrase" onkeypress="@OnKeyPressed" placeholder="Czego szukasz?" />
+                        <input type="text" id="search-box" class="form-control form-control-lg" bind="Phrase" onkeypress="@OnKeyPressed" placeholder="Czego szukasz?" />
                         <div class="dropdown-menu @(Searched ? "show" : " ") dialog-box-max-width form-group">
                                 @foreach (var lecture in SearchedLectures)
                                 {
                                         <a class="dropdown-item" href="/zajecia/@lecture.Id">@lecture.Name</a>
                                 }
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/zajecia?wyszukaj=@Phrase">Więcej...</a>
+                            <a class="dropdown-item" href="/zajecia/strona/1?wyszukaj=@Phrase">Więcej...</a>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -137,4 +138,7 @@
         </div>
         <!-- /.col-md-4 -->
     </div>
+</div>
+<div class="text-center">
+    <a href="/zajecia/strona/1" class="btn btn-primary btn-sm">Wszystkie kursy</a>
 </div>
