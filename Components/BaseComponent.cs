@@ -52,6 +52,7 @@ namespace ZPP_Blazor.Components
                 else
                 {
                     this.IsSigned = false;
+                    await LocalStorage.RemoveItem("token");
                 }
             }
             else
