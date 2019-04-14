@@ -15,6 +15,11 @@ namespace ZPP_Blazor.Models
         public string LecturerFullName
             => $"{LecturerName} {LecturerSurname}";
         public int NumberOfParticipants {get; set;}
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 
 }

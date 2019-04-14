@@ -28,7 +28,7 @@ namespace ZPP_Blazor.Components.SignIn
             await base.OnInitAsync();
             if (IsSigned)
             {
-                UriHelper.NavigateTo("/profil");
+                UriHelper.NavigateTo("/konto");
             }
             ErrorMessage = string.Empty;
             IsAlertVisible = false;
@@ -76,7 +76,7 @@ namespace ZPP_Blazor.Components.SignIn
                 await SignInService.HandleSignIn(obj);
                 // UriHelper.NavigateTo("/profil");
                 IsSigned = true;
-                await JSRuntime.Current.InvokeAsync<bool>("reload", "/profil");
+                await JSRuntime.Current.InvokeAsync<bool>("reload", "/konto");
             }
             else
             {

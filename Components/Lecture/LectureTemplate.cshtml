@@ -28,9 +28,9 @@
         padding-left: 0px;
     }
 
-   .link-back:hover {
-       color: #050709;
-   }
+        .link-back:hover {
+            color: #050709;
+        }
 
     .margin-left-std {
         margin-left: 1em;
@@ -38,6 +38,15 @@
 </style>
 
 <div class="container container-margin-top">
+    @if (HasJoined)
+    {
+        <div class="alert alert-success" role="alert">@Message</div>
+    }
+    @if (HasError)
+    {
+        <div class="alert alert-danger" role="alert">@Message</div>
+    }
+
     <NavLink class="btn link-back" href="/zajecia/strona/1"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="margin-left-std">Powrót do listy</span></NavLink>
     <h2>@CurrentLecture.Name</h2>
     <div class="row">
@@ -52,7 +61,20 @@
                 <h2>Opis zajęć</h2>
                 <p>@CurrentLecture.Description</p>
             </div>
-            <button class="btn btn-primary btn-lg btn-ok">Zapisz się!</button>
+            @if (UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == false)
+            {
+                <button class="btn btn-primary btn-lg btn-ok" onclick="@Join">Zapisz się!</button>
+            }
+            else if(Finished)
+            {
+                <div
+                      class="alert alert-secondary">Zapisy na zajęcia zostały zakończone</div>
+            }
+            else if(UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == true)
+            {
+                <div class="alert alert-info">Jesteś zapisany na te zajęcia</div>
+            }
+
         </div>
         <div class="col-md-6">
             <!-- <div id="googleMap" style="width:100%;height:400px;"></div> -->

@@ -91,6 +91,25 @@ namespace ZPP_Blazor.Services
             return new List<Lecture>();
         }
 
-
+        public async Task<IEnumerable<UserLecture>> GetMyLectures()
+        {
+            var response = await _http.GetAsync("/api/lectures/mine");
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                try
+                {
+                    return Json.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync());
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+            return new List<UserLecture>();
+        }
     }
 }
