@@ -19,7 +19,12 @@
         </div>
     </div>
     <div class="row">
+        @if (Processing)
+        {
+            <div class="loader-lg"></div>
+        }
         <div class="col-md-8">
+            <NavLink class="btn link-back" href="/wykladowca"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="margin-left-std">Powrót</span></NavLink>
             <h2>Utwórz nowe zajęcia</h2>
             <div class="alert alert-danger" style="@(IsAlertVisible ? "visibility:visible;" : "display:none;")" role="alert">@Message</div>
             <div class="form-group">
@@ -28,11 +33,11 @@
             </div>
             <div class="form-group">
                 <label for="lectureDate">Data</label>
-                <input id="lectureDate" onchange="@SelectedDateChange" type="date" required class="form-control"/>
+                <input id="lectureDate" onchange="@SelectedDateChange" type="date" required class="form-control" />
             </div>
             <div class="form-group">
                 <label for="lectureDate">Godzina</label>
-                <input id="lectureTime" type="time" required class="form-control"  />
+                <input id="lectureTime" type="time" required class="form-control" />
             </div>
             <div class="form-group">
                 <label for="place">Miejsce</label>
@@ -43,7 +48,7 @@
                 <textarea class="form-control" id="desc" rows="3" required bind="Description" placeholder="Opis wydarzenia..."></textarea>
             </div>
 
-            <button class="btn btn-primary btn-lg btn-ok" type="button" onclick="@Save">Zapisz</button>
+            <button class="btn btn-primary btn-lg btn-ok" style="@(Processing ? "pointer-events:none" :"pointer-events:auto" )" type="button" onclick="@Save">Zapisz</button>
         </div>
     </div>
 

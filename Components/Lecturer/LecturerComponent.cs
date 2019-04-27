@@ -1,25 +1,16 @@
+ï»¿using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
-using Microsoft.JSInterop;
+using ZPP_Blazor.Enums;
 using ZPP_Blazor.Models;
 using ZPP_Blazor.Services;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace ZPP_Blazor.Components.Me
+namespace ZPP_Blazor.Components.Lecturer
 {
-    public enum LectureTab
-    {
-        Current,
-        Future,
-        Past
-    }
-    public class MeComponent : AppComponent
+    public class LecturerComponent : AppComponent
     {
         [Inject]
         protected ILectureService _lectureService { get; set; }
@@ -36,7 +27,6 @@ namespace ZPP_Blazor.Components.Me
         public bool SetOpinionVisible { get; set; }
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
-        public bool IsLecturer { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -44,9 +34,6 @@ namespace ZPP_Blazor.Components.Me
             Console.WriteLine("Navigated to me");
             await LoadUserDataAsync();
             await LoadUseLectures();
-            var token = await LocalStorage.GetItem<JsonWebToken>("token");
-            Console.WriteLine("Rola: " + token?.Role);
-            IsLecturer = token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase);
             this.StateHasChanged();
         }
 
@@ -94,37 +81,9 @@ namespace ZPP_Blazor.Components.Me
 
             ActiveLectures = UserLectures.Where(x => x.Date <= DateTime.Now && x.Date.AddDays(30) >= DateTime.Now && !x.Present).ToList();
             FutureLectures = UserLectures.Where(x => x.Date > DateTime.Now).ToList();
-            PastLectures = UserLectures.Where(x => x.Date < DateTime.Now && ! ActiveLectures.Any(l=>l.Id == x.Id)).ToList();
+            PastLectures = UserLectures.Where(x => x.Date < DateTime.Now && !ActiveLectures.Any(l => l.Id == x.Id)).ToList();
             LoadedLectures = true;
             StateHasChanged();
-        }
-
-        public async Task QuitLecture()
-        {
-            Console.WriteLine("Quit " + SelectedLecture);
-            var content = new StringContent(SelectedLecture?.Id.ToString(), System.Text.Encoding.UTF8, "application/json");
-            try
-            {
-                var response = await Http.PutAsync("/api/lecture/quit", content);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    FutureLectures.Remove(FutureLectures.First(x => x.Id == SelectedLecture?.Id));
-                    StateHasChanged();
-                }
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                {
-                    Console.WriteLine(await response.Content.ReadAsStringAsync());
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                DeleteConfVisible = false;
-                StateHasChanged();
-            }
         }
 
         protected void ShowDeleteConfirmation(Models.UserLecture lecture)
@@ -134,33 +93,25 @@ namespace ZPP_Blazor.Components.Me
             StateHasChanged();
         }
 
-        protected void ShowSetPresentDialog(UserLecture lecture)
+        protected async Task DeleteLecture()
         {
-            Console.WriteLine("Potwierdzenie obecnoœci");
-            SelectedLecture = lecture;
-            SetPresentVisible = true;
-            StateHasChanged();
+            try
+            {
+                await _lectureService.DeleteLecture(SelectedLecture.Id);
+                DeleteConfVisible = false;
+                await LoadUseLectures();
+                StateHasChanged();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                FutureLectures.Remove(SelectedLecture);
+            }
         }
 
-        protected void ShowSetOpinionDialog(UserLecture lecture)
+        protected void ShowOpinions(Models.UserLecture lecture)
         {
-            Console.WriteLine("");
-            SelectedLecture = lecture;
-            SetOpinionVisible = true;
-            StateHasChanged();
-        }
 
-        public async Task SetPresent()
-        {
-            Console.WriteLine("present is set");
-            SetPresentVisible = false;
-        }
-
-        public async Task SaveOpinion()
-        {
-            Console.WriteLine("Opinion set");
-            SetOpinionVisible = false;
-            StateHasChanged();
         }
     }
 }

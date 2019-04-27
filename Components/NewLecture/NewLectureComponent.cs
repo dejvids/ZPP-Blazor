@@ -18,16 +18,16 @@ namespace ZPP_Blazor.Components.NewLecture
         public bool ShowDialog { get; set; }
         public bool IsAlertVisible { get; set; }
         public string Message { get; set; }
+        public bool Processing { get; set; }
 
         protected async override Task OnInitAsync()
         {
             await base.OnInitAsync();
-            Console.WriteLine("Role " + AppCtx.CurrentUser?.Role);
             var token = await LocalStorage.GetItem<JsonWebToken>("token");
 
             if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {
-                UriHelper.NavigateTo("/konto");
+                UriHelper.NavigateTo("/");
                 return;
             }
 
@@ -55,6 +55,8 @@ namespace ZPP_Blazor.Components.NewLecture
             Console.WriteLine(AppCtx.CurrentUser?.Id);
 
             var content = new StringContent(Json.Serialize(newLecture), System.Text.Encoding.UTF8, "application/json");
+            Processing = true;
+            StateHasChanged();
             try
             {
                 var response = await Http.PostAsync("/api/lectures", content);
@@ -75,6 +77,11 @@ namespace ZPP_Blazor.Components.NewLecture
             catch (Exception ex)
             {
                 Console.WriteLine("Adding lecture failed " + ex.Message);
+            }
+            finally
+            {
+                Processing = false;
+                StateHasChanged();
             }
         }
 
