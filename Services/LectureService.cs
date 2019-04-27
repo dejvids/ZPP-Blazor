@@ -28,7 +28,7 @@ namespace ZPP_Blazor.Services
                 string content = await result.Content.ReadAsStringAsync();
                 return Json.Deserialize<Models.Lecture>(content);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 throw new Exception("Błąd podczas pobierania danych");
@@ -100,16 +100,29 @@ namespace ZPP_Blazor.Services
                 {
                     return Json.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync());
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
-            else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 throw new Exception(await response.Content.ReadAsStringAsync());
             }
             return new List<UserLecture>();
         }
+
+        public async Task DeleteLecture(int lectureId)
+        {
+            try
+            {
+                var reponse = await _http.DeleteAsync($"/api/lectures/{lectureId}");
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

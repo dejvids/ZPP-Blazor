@@ -1,0 +1,55 @@
+﻿@page "/zajecia/dodaj"
+@layout MainLayout
+@inherits NewLectureComponent
+
+<div class="container container-margin-top">
+    <div class="modal" tabindex="-1" style="@(ShowDialog ? "display:block;" : "display:none;")" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sukces</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" role="alert">Zajęcia zostałe zapisane w systemie.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="@(()=> { UriHelper.NavigateTo("/konto"); })">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @if (Processing)
+        {
+            <div class="loader-lg"></div>
+        }
+        <div class="col-md-8">
+            <NavLink class="btn link-back" href="/wykladowca"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="margin-left-std">Powrót</span></NavLink>
+            <h2>Utwórz nowe zajęcia</h2>
+            <div class="alert alert-danger" style="@(IsAlertVisible ? "visibility:visible;" : "display:none;")" role="alert">@Message</div>
+            <div class="form-group">
+                <label for="name">Nazwa</label>
+                <input id="name" type="text" class="form-control" bind="Name" required />
+            </div>
+            <div class="form-group">
+                <label for="lectureDate">Data</label>
+                <input id="lectureDate" onchange="@SelectedDateChange" type="date" required class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="lectureDate">Godzina</label>
+                <input id="lectureTime" type="time" required class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="place">Miejsce</label>
+                <input id="place" type="text" class="form-control" required bind="Place" />
+            </div>
+            <div class="form-group">
+                <label for="desc">Opis</label>
+                <textarea class="form-control" id="desc" rows="3" required bind="Description" placeholder="Opis wydarzenia..."></textarea>
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-ok" style="@(Processing ? "pointer-events:none" :"pointer-events:auto" )" type="button" onclick="@Save">Zapisz</button>
+        </div>
+    </div>
+
+</div>

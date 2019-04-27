@@ -32,6 +32,23 @@
             let phrase = document.getElementById("search-box");
             return phrase.value;
         }
+
+        window.lectures = {
+            getLectureDate: function () {
+                return document.getElementById("lectureDate").value;
+            },
+            setLectureDate: function (selectedDate) {
+                document.getElementById("lectureDate").value = selectedDate;
+                return "OK";
+            },
+            getLectureTime: function () {
+                return document.getElementById("lectureTime").value;
+            },
+            setLectureTime: function (selectedDate) {
+                document.getElementById("lectureTime").value = selectedDate;
+                return "OK";
+            }
+        };
     </script>
 </body>
 </html>

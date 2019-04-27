@@ -1,5 +1,6 @@
-@page "/konto"
-@inherits MeComponent
+@page "/student"
+@inherits Student.StudentComponent
+@using Enums;
 @layout MainLayout
 
 <style>
@@ -9,7 +10,7 @@
 </style>
 <div class="container">
     <h1>@User?.Name @User?.Surname</h1>
-    <div class="row container-margin-top">
+    <div class="container-margin-top">
         <div class="modal" tabindex="-1" style="@(DeleteConfVisible ? "display:block;" :"display:none;")" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -53,7 +54,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="modal" tabindex="-1" style="@(SetOpinionVisible ? "display:block;" :"display:none;")" role="dialog">
             <div class="modal-dialog  modal-lg" role="document">
@@ -162,80 +162,89 @@
             </div>
         </div>
 
-        <div class="col-md-12">
-            <h3>Moje zajęcia</h3>
-            @if (LoadedLectures)
-            {
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="home-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Current)" role="tab" aria-selected="true">Aktywne</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="profile-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Future)" role="tab" aria-selected="false">Nadchodzące</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="contact-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Past)" role="tab" aria-selected="false">Zakończone</button>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade @( SelectedTab == LectureTab.Current ? "show active" : "")" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <ul class="list-group">
-                            @foreach (var lecture in ActiveLectures)
-                            {
-                                <li class="list-group-item">
-                                    <a class="btn btn-link" href="/zajecia/@lecture.Id">
-                                        @lecture.Name
-                                    </a>
-                                    <button class="btn btn-success horizontal-right" onclick="@(()=> ShowSetPresentDialog(lecture))">
-                                        Potwierdź obecność
-                                    </button>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="tab-pane fade @(SelectedTab == LectureTab.Future ? "show active" : "")" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                        <ul class="list-group">
-                            @foreach (var lecture in FutureLectures)
-                            {
-                                <li class="list-group-item">
-                                    <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy")</span>
-                                    <a class="btn btn-link" href="/zajecia/@lecture.Id">
-                                        @lecture.Name
-                                    </a>
-                                    <button class="btn btn-danger horizontal-right" onclick="@(()=> ShowDeleteConfirmation(lecture))">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                        Rezygnuj
-                                    </button>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="tab-pane fade @(SelectedTab == LectureTab.Past ? "show active" : "")" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        <ul class="list-group">
-                            @foreach (var lecture in PastLectures)
-                            {
-                                <li class="list-group-item">
-                                    <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy")</span>
-                                    <a class="btn btn-link" href="/zajecia/@lecture.Id">
-                                        @lecture.Name
-                                    </a>
-                                    @if (!lecture.Marked)
-                                    {
-                                        <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowSetOpinionDialog(lecture))">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                            Oceń
+        <div class="row">
+            <div class="col-md-10">
+
+                <h3>Moje zajęcia</h3>              
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+
+                @if (LoadedLectures)
+                {
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="home-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Current)" role="tab" aria-selected="true">Aktywne</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="profile-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Future)" role="tab" aria-selected="false">Nadchodzące</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="contact-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Past)" role="tab" aria-selected="false">Zakończone</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade @( SelectedTab == LectureTab.Current ? "show active" : "")" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <ul class="list-group">
+                                @foreach (var lecture in ActiveLectures)
+                                {
+                                    <li class="list-group-item">
+                                        <a class="btn btn-link" href="/zajecia/@lecture.Id">
+                                            @lecture.Name
+                                        </a>
+                                        <button class="btn btn-success horizontal-right" onclick="@(()=> ShowSetPresentDialog(lecture))">
+                                            Potwierdź obecność
                                         </button>
-                                    }
-                                </li>
-                            }
-                        </ul>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade @(SelectedTab == LectureTab.Future ? "show active" : "")" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <ul class="list-group">
+                                @foreach (var lecture in FutureLectures)
+                                {
+                                    <li class="list-group-item">
+                                        <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy")</span>
+                                        <a class="btn btn-link" href="/zajecia/@lecture.Id">
+                                            @lecture.Name
+                                        </a>
+                                        <button class="btn btn-danger horizontal-right" onclick="@(()=> ShowDeleteConfirmation(lecture))">
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                            Rezygnuj
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade @(SelectedTab == LectureTab.Past ? "show active" : "")" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                            <ul class="list-group">
+                                @foreach (var lecture in PastLectures)
+                                {
+                                    <li class="list-group-item">
+                                        <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy")</span>
+                                        <a class="btn btn-link" href="/zajecia/@lecture.Id">
+                                            @lecture.Name
+                                        </a>
+                                        @if (!lecture.Marked)
+                                        {
+                                            <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowSetOpinionDialog(lecture))">
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                                Oceń
+                                            </button>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="loader-lg"></div>
-            }
+                }
+                else
+                {
+                    <div class="loader-lg"></div>
+                }
+            </div>
         </div>
     </div>
 </div>
