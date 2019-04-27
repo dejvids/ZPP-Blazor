@@ -36,6 +36,7 @@ namespace ZPP_Blazor.Components.Me
         public bool SetOpinionVisible { get; set; }
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
+        public bool IsLecturer { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -43,6 +44,10 @@ namespace ZPP_Blazor.Components.Me
             Console.WriteLine("Navigated to me");
             await LoadUserDataAsync();
             await LoadUseLectures();
+            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+            Console.WriteLine("Rola: " + token?.Role);
+            IsLecturer = token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase);
+            this.StateHasChanged();
         }
 
         private async Task LoadUserDataAsync()
@@ -87,16 +92,16 @@ namespace ZPP_Blazor.Components.Me
                 Console.WriteLine(ex.Message);
             }
 
+            ActiveLectures = UserLectures.Where(x => x.Date <= DateTime.Now && x.Date.AddDays(30) >= DateTime.Now && !x.Present).ToList();
             FutureLectures = UserLectures.Where(x => x.Date > DateTime.Now).ToList();
-            PastLectures = UserLectures.Where(x => x.Date < DateTime.Now).ToList();
-            ActiveLectures = UserLectures.Where(x => x.Date <= DateTime.Now && x.Date >= DateTime.Now.AddDays(-30) && !x.Presente).ToList();
+            PastLectures = UserLectures.Where(x => x.Date < DateTime.Now && ! ActiveLectures.Any(l=>l.Id == x.Id)).ToList();
             LoadedLectures = true;
             StateHasChanged();
         }
 
         public async Task QuitLecture()
         {
-            Console.WriteLine("Quti " + SelectedLecture);
+            Console.WriteLine("Quit " + SelectedLecture);
             var content = new StringContent(SelectedLecture?.Id.ToString(), System.Text.Encoding.UTF8, "application/json");
             try
             {

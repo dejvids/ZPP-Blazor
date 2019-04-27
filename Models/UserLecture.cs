@@ -7,7 +7,7 @@ namespace ZPP_Blazor.Models
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public string Place { get; set; }
-        public bool Presente { get; set; }
+        public bool Present { get; set; }
         public bool Marked { get; set; }
     }
 }
