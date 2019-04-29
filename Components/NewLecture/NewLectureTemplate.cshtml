@@ -2,6 +2,22 @@
 @layout MainLayout
 @inherits NewLectureComponent
 
+<style>
+    .link-back {
+        font-size: 16pt;
+        margin-bottom: 1em;
+        padding-left: 0px;
+    }
+
+        .link-back:hover {
+            color: #050709;
+        }
+
+    .margin-left-std {
+        margin-left: 1em;
+    }
+</style>
+
 <div class="container container-margin-top">
     <div class="modal" tabindex="-1" style="@(ShowDialog ? "display:block;" : "display:none;")" role="dialog">
         <div class="modal-dialog" role="document">
