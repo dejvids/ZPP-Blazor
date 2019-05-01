@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace ZPP_Blazor.Components.Administrator
         protected UserDetail SelectedUser { get; set; } = new UserDetail();
         protected bool ShowUserRole { get; set; }
         protected List<Role> AvalibleRoles = new List<Role> { Role.Student, Role.Wykładowca };
+        protected List<Company> Companies { get; set; } = new List<Company>();
+        protected Company SelectedCompany { get; set; } = new Company();
         protected Role SelectedRole { get; set; }
         public AdministratorComponent()
         {
@@ -30,6 +33,7 @@ namespace ZPP_Blazor.Components.Administrator
             await base.OnInitAsync();
             Console.WriteLine("Init admin");
             await LoadUsers();
+            await LoadCompanies();
 
         }
         private async Task LoadUsers()
@@ -48,23 +52,50 @@ namespace ZPP_Blazor.Components.Administrator
             }
         }
 
+        private async Task LoadCompanies()
+        {
+            try
+            {
+                var result = await Http.GetAsync("/api/companies");
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Companies = Json.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
+                    StateHasChanged();
+                }
+                else
+                {
+                    Console.WriteLine(await result.Content.ReadAsStringAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         protected async Task SetRole()
         {
             Console.WriteLine("Set user role");
+
             if ((int)SelectedRole == SelectedUser.RoleId)
             {
                 return;
             }
-
-            var grantContent = new GrantRoleDto()
+            if (SelectedRole == Role.Wykładowca && SelectedCompany.Id == SelectedUser.CompanyId)
+            {
+                return;
+            }
+                var grantContent = new GrantRoleDto()
             {
                 UserId = SelectedUser.Id,
                 RoleId = (int)SelectedRole,
+                CompanyId = SelectedCompany.Id
             };
 
             try
             {
                 await _usersService.SetUserRole(grantContent);
+                ShowUserRole = false;
                 await LoadUsers();
                 StateHasChanged();
                 Console.WriteLine("Role granted");
@@ -80,10 +111,12 @@ namespace ZPP_Blazor.Components.Administrator
         {
             if (user.RoleId == (int)Role.Student || user.RoleId == (int)Role.Wykładowca)
             {
-                SelectedUser = user;
-                SelectedRole = (Role)SelectedUser.RoleId;
-                ShowUserRole = true;
-                StateHasChanged();
+               
+                    SelectedUser = user;
+                    SelectedCompany = Companies.FirstOrDefault(c => c.Id == SelectedUser.CompanyId);
+                    SelectedRole = (Role)SelectedUser.RoleId;
+                    ShowUserRole = true;
+                    StateHasChanged();
             }
         }
 

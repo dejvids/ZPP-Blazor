@@ -6,12 +6,21 @@
     .horizontal-right {
         float: right;
     }
-    .btn-std-margin{
+
+    .btn-std-margin {
         margin-left: 5px;
         margin-right: 5px;
     }
-    .btn-regular{
+
+    .btn-regular {
         min-width: 110px;
+    }
+
+    .align-right {
+        float: right;
+    }
+    .std-margin{
+        margin-top: 30px;
     }
 </style>
 <div class="container">
@@ -25,17 +34,33 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Ustaw rolę dla użytkownika <span style="font-style: italic; font-weight: bold">@SelectedUser.Login</span>
-                    <div class="dropdown show">
-                        <button class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @(SelectedRole.ToString())
-                        </button>
+                    <p>
+                        Ustaw rolę dla użytkownika <span style="font-style: italic; font-weight: bold">@SelectedUser.Login</span>
+                        <div class="dropdown show align-right">
+                            <button class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @(SelectedRole.ToString())
+                            </button>
 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Student ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Student; StateHasChanged(); })">Student</button>
-                            <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Wykładowca ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Wykładowca; })">Wykładowca</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Student ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Student; StateHasChanged(); })">Student</button>
+                                <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Wykładowca ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Wykładowca; })">Wykładowca</button>
+                            </div>
                         </div>
-                    </div>
+                    </p>
+                    <p class="std-margin" style="@(SelectedRole == Enums.Role.Wykładowca ? "display: block;" : "display: none;") ">
+                        Przynależność do firmy
+                        <div class="dropdown show align-right">
+                            <button class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @(SelectedCompany?.Name ?? "Firma")
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                @foreach(var company in Companies)
+                                {
+                                <button class="dropdown-item" onclick="@(()=> { SelectedCompany = company; StateHasChanged(); })">@company.Name</button>
+
+                                }
+                            </div>
+                        </div>
                     </p>
                 </div>
                 <div class="modal-footer">
