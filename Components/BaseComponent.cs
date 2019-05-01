@@ -30,8 +30,8 @@ namespace ZPP_Blazor.Components
 
         protected override async Task OnInitAsync()
         {
-            Http.BaseAddress = new Uri(_prodBaseAddress);
-            AppCtx.BaseAddress = _prodBaseAddress;
+            Http.BaseAddress = new Uri(_developBaseAddress);
+            AppCtx.BaseAddress = _developBaseAddress;
 
             this.IsSigned = false;
 
