@@ -25,6 +25,11 @@ namespace ZPP_Blazor.Components.Shared
                 UriHelper.NavigateTo("/wykladowca");
                 return;
             }
+            else if(AppCtx.CurrentUser.Role.Equals("admin", StringComparison.InvariantCultureIgnoreCase))
+            {
+                UriHelper.NavigateTo("/admin");
+                return;
+            }
             UriHelper.NavigateTo("/");
         }
     }

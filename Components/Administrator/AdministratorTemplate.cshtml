@@ -1,0 +1,98 @@
+﻿@page "/admin"
+@inherits AdministratorComponent
+@layout MainLayout
+
+<style>
+    .horizontal-right {
+        float: right;
+    }
+
+    .btn-std-margin {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .btn-regular {
+        min-width: 110px;
+    }
+
+    .align-right {
+        float: right;
+    }
+    .std-margin{
+        margin-top: 30px;
+    }
+</style>
+<div class="container">
+    <div class="modal" tabindex="-1" style="@(ShowUserRole ? "display:block;" :"display:none;")" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uprawnienia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { ShowUserRole = false; StateHasChanged(); })">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Ustaw rolę dla użytkownika <span style="font-style: italic; font-weight: bold">@SelectedUser.Login</span>
+                        <div class="dropdown show align-right">
+                            <button class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @(SelectedRole.ToString())
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Student ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Student; StateHasChanged(); })">Student</button>
+                                <button class="dropdown-item @(SelectedUser.RoleId == (int)Enums.Role.Wykładowca ? "active" : "")" onclick="@(()=> { SelectedRole = Enums.Role.Wykładowca; })">Wykładowca</button>
+                            </div>
+                        </div>
+                    </p>
+                    <p class="std-margin" style="@(SelectedRole == Enums.Role.Wykładowca ? "display: block;" : "display: none;") ">
+                        Przynależność do firmy
+                        <div class="dropdown show align-right">
+                            <button class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @(SelectedCompany?.Name ?? "Firma")
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                @foreach(var company in Companies)
+                                {
+                                <button class="dropdown-item" onclick="@(()=> { SelectedCompany = company; StateHasChanged(); })">@company.Name</button>
+
+                                }
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { ShowUserRole = false; StateHasChanged(); })">Anuluj</button>
+                    <button type="button" class="btn btn-primary" onclick="@SetRole">Zapisz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1>Konta użytkowników</h1>
+    @if (Loaded)
+    {
+        <ul class="list-group">
+            @foreach (var user in Users)
+            {
+                <li class="list-group-item">
+                    <a class="btn btn-link" href="/zajecia/@user.Id">
+                        @user.Login - @user.Name @user.Surname
+                    </a>
+                    <button class="btn btn-danger horizontal-right btn-std-margin" onclick="@(()=> ShowDeleteConfirmation(user))">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        Usuń
+                    </button>
+                    <button class="btn btn-primary horizontal-right btn-std-margin btn-regular @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "") " onclick="@(()=> ShowSelectRoleDialog(user) )">
+                        @(((Enums.Role)user.RoleId).ToString())
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="loader-lg"></div>
+    }
+</div>
