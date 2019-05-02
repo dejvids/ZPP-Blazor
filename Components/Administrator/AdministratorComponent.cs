@@ -20,18 +20,19 @@ namespace ZPP_Blazor.Components.Administrator
         protected UserDetail SelectedUser { get; set; } = new UserDetail();
         protected bool ShowUserRole { get; set; }
         protected List<Role> AvalibleRoles = new List<Role> { Role.Student, Role.Wykładowca };
+        private Role _selectedRole;
+
         protected List<Company> Companies { get; set; } = new List<Company>();
         protected Company SelectedCompany { get; set; } = new Company();
-        protected Role SelectedRole { get; set; }
-        public AdministratorComponent()
+        protected Role SelectedRole
         {
-
+            get { return _selectedRole; }
+            set { _selectedRole = value; SelectedCompany = Companies.FirstOrDefault(); StateHasChanged(); }
         }
 
         protected override async Task OnInitAsync()
         {
             await base.OnInitAsync();
-            Console.WriteLine("Init admin");
             await LoadUsers();
             await LoadCompanies();
 
@@ -60,6 +61,7 @@ namespace ZPP_Blazor.Components.Administrator
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     Companies = Json.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
+                    SelectedCompany = Companies.FirstOrDefault();
                     StateHasChanged();
                 }
                 else
@@ -75,17 +77,21 @@ namespace ZPP_Blazor.Components.Administrator
 
         protected async Task SetRole()
         {
-            Console.WriteLine("Set user role");
-
-            if ((int)SelectedRole == SelectedUser.RoleId)
-            {
-                return;
-            }
+            Console.WriteLine(SelectedCompany.Name + " " + SelectedUser.CompanyName);
             if (SelectedRole == Role.Wykładowca && SelectedCompany.Id == SelectedUser.CompanyId)
             {
+                ShowUserRole = false;
+                StateHasChanged();
                 return;
             }
-                var grantContent = new GrantRoleDto()
+            if ((int)SelectedRole == SelectedUser.RoleId && SelectedUser.RoleId == (int)Role.Student)
+            {
+                ShowUserRole = false;
+                StateHasChanged();
+                return;
+            }
+            Console.WriteLine("OK");
+            var grantContent = new GrantRoleDto()
             {
                 UserId = SelectedUser.Id,
                 RoleId = (int)SelectedRole,
@@ -111,12 +117,12 @@ namespace ZPP_Blazor.Components.Administrator
         {
             if (user.RoleId == (int)Role.Student || user.RoleId == (int)Role.Wykładowca)
             {
-               
-                    SelectedUser = user;
-                    SelectedCompany = Companies.FirstOrDefault(c => c.Id == SelectedUser.CompanyId);
-                    SelectedRole = (Role)SelectedUser.RoleId;
-                    ShowUserRole = true;
-                    StateHasChanged();
+
+                SelectedUser = user;
+                SelectedCompany = Companies.FirstOrDefault(c => c.Id == SelectedUser.CompanyId);
+                SelectedRole = (Role)SelectedUser.RoleId;
+                ShowUserRole = true;
+                StateHasChanged();
             }
         }
 
