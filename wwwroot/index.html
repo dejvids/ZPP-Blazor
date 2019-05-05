@@ -49,6 +49,36 @@
                 return "OK";
             }
         };
+
+        window.opinions = {
+            getLectureOpinion: function () {
+                var radios = document.getElementsByName('lectureGrade');
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        return radios[i].value;
+                    }
+                }
+                return 0;
+            },
+            getLecturerOpinion: function () {
+                var radios = document.getElementsByName('lecturerGrade');
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        return radios[i].value;
+                    }
+                }
+                return 0;
+            },
+            getRecommendationChance: function () {
+                var radios = document.getElementsByName('chance');
+                for (var i = 0, length = radios.length; i < length; i++) {
+                    if (radios[i].checked) {
+                        return radios[i].value;
+                    }
+                }
+                return 0;
+            }
+        }
     </script>
 </body>
 </html>

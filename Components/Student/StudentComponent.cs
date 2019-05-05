@@ -33,6 +33,11 @@ namespace ZPP_Blazor.Components.Student
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
 
+        public int SubjectMark { get; set; }
+        public int LecturerMark { get; set; }
+        public int RecommendationChance { get; set; }
+        public string Comment { get; set; }
+
         protected override async Task OnInitAsync()
         {
             await base.OnInitAsync();
@@ -151,8 +156,38 @@ namespace ZPP_Blazor.Components.Student
         public async Task SaveOpinion()
         {
             Console.WriteLine("Opinion set");
-            SetOpinionVisible = false;
-            StateHasChanged();
+
+            this.SubjectMark = await JSRuntime.Current.InvokeAsync<int>("opinions.getLectureOpinion");
+            this.LecturerMark = await JSRuntime.Current.InvokeAsync<int>("opinions.getLecturerOpinion");
+            this.RecommendationChance = await JSRuntime.Current.InvokeAsync<int>("opinions.getRecommendationChance");
+            
+
+            var opinion = new Opinion()
+            {
+                LectureId = SelectedLecture.Id,
+                SubjectMark = this.SubjectMark,
+                LecturerMark = this.LecturerMark,
+                RecommendationChance = this.RecommendationChance,
+                Comment = this.Comment
+            };
+
+            var content = new StringContent(Json.Serialize(opinion), System.Text.Encoding.UTF8, "application/json");
+            try
+            {
+                await Http.PostAsync("/api/opinions", content);
+                Console.WriteLine("set opinion success");
+                await LoadUseLectures();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error");
+            }
+            finally
+            {
+                SetOpinionVisible = false;
+                StateHasChanged();
+            }
         }
     }
 }
