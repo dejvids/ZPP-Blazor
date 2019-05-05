@@ -24,6 +24,25 @@
     }
 </style>
 <div class="container">
+    <div class="modal" tabindex="-1" style="@(DeleteConfVisible ? "display:block;" :"display:none;")" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Potwierdzenie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { DeleteConfVisible = false; })">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Czy na pewno chcesz usunąć zajęcia <span style="font-style: italic;">@SelectedUser?.Login</span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { DeleteConfVisible = false;})">Nie</button>
+                    <button type="button" class="btn btn-primary" onclick="@DeleteUser">Tak</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal" tabindex="-1" style="@(ShowUserRole ? "display:block;" :"display:none;")" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -54,9 +73,9 @@
                                 @(SelectedCompany?.Name ?? "Firma")
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                @foreach(var company in Companies)
+                                @foreach (var company in Companies)
                                 {
-                                <button class="dropdown-item" onclick="@(()=> { SelectedCompany = company; StateHasChanged(); })">@company.Name</button>
+                                    <button class="dropdown-item" onclick="@(()=> { SelectedCompany = company; StateHasChanged(); })">@company.Name</button>
 
                                 }
                             </div>
@@ -77,9 +96,7 @@
             @foreach (var user in Users)
             {
                 <li class="list-group-item">
-                    <a class="btn btn-link" href="/zajecia/@user.Id">
                         @user.Login - @user.Name @user.Surname
-                    </a>
                     <button class="btn btn-danger horizontal-right btn-std-margin" onclick="@(()=> ShowDeleteConfirmation(user))">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                         Usuń

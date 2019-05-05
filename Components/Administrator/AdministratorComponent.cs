@@ -22,6 +22,8 @@ namespace ZPP_Blazor.Components.Administrator
         protected List<Role> AvalibleRoles = new List<Role> { Role.Student, Role.Wykładowca };
         private Role _selectedRole;
 
+        public bool DeleteConfVisible { get; set; }
+
         protected List<Company> Companies { get; set; } = new List<Company>();
         protected Company SelectedCompany { get; set; } = new Company();
         protected Role SelectedRole
@@ -128,7 +130,28 @@ namespace ZPP_Blazor.Components.Administrator
 
         protected void ShowDeleteConfirmation(UserDetail user)
         {
+            DeleteConfVisible = true;
+            SelectedUser = user;
+            StateHasChanged();
+        }
 
+        protected async Task DeleteUser()
+        {
+            Console.WriteLine("Deleting user");
+            try
+            {
+                await Http.DeleteAsync($"/api/users/{SelectedUser.Id}");
+                await LoadUsers();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                this.DeleteConfVisible = false;
+                StateHasChanged();
+            }
         }
 
     }
