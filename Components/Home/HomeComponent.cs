@@ -65,7 +65,6 @@ namespace ZPP_Blazor.Components.Home
             try
             {
                 var lectures = await _lectureService.GetLectures(1, Phrase, Enums.OrderOption.name);
-                Console.WriteLine("Znalezionych wykładów " + lectures.Count());
                 if (lectures.Count() >= 1)
                 {
                     SearchedLectures = lectures.Take(4).ToList();
@@ -100,7 +99,6 @@ namespace ZPP_Blazor.Components.Home
             else
             {
                 Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
-                Console.WriteLine("Key pressed, phrase="+Phrase);
                 if (Phrase?.Count() >= 3)
                 {
                     await Search();

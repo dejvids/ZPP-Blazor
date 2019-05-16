@@ -7,9 +7,28 @@
     .horizontal-right {
         float: right;
     }
+    #page-header {
+        margin-bottom: 20px;
+        padding: 8px;
+        border-radius: 8px;
+        border-width: 0px !important;
+        background-color: #0F88AC;
+        color: white;
+        padding-top: 0px;
+        padding-right: 0px;
+    }
+    #sub-header {
+        /*background-color: #188468;*/
+        margin-left: -8px;
+        margin-right: -8px;
+        padding: 6px;
+    }
+    #nameHeader {
+        margin-top: 8px;
+    }
+
 </style>
 <div class="container">
-    <h1>@User?.Name @User?.Surname</h1>
     <div class="container-margin-top">
         <div class="modal" tabindex="-1" style="@(DeleteConfVisible ? "display:block;" :"display:none;")" role="dialog">
             <div class="modal-dialog" role="document">
@@ -30,17 +49,23 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-10">
-
-                <h3>Moje zajęcia</h3>
+        <div id="page-header" class="border border-primary">
+            <div class="row">
+                <div class="col-md-10">
+                    <p id="nameHeader">Zalogowano jako <span style="font-weight:bold">@User?.Name @User?.Surname</span></p>
+                </div>
+                <div class="col-md-2">
+                    <p  style="background-color: #0A5F78; font-weight:bold; font-size:14pt; padding:8px; text-align:center">Wykładowca</p>
+                </div>
             </div>
-
-            <div class="col-md-2">
-                <NavLink href="/zajecia/dodaj" class="btn btn-primary">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Dodaj
-                </NavLink>
+            <div id="sub-header" class="row">
+                <h3 class="col-md-10 align-self-center">Moje zajęcia</h3>
+                <div class="col-md-2 align-self-center">
+                    <NavLink href="/zajecia/dodaj" class="btn btn-primary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Dodaj
+                    </NavLink>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -67,7 +92,7 @@
                                     <li class="list-group-item">
                                         <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                             @lecture.Name
-                                        </a>                 
+                                        </a>
                                     </li>
                                 }
                             </ul>
@@ -100,10 +125,10 @@
                                         </a>
                                         @if (!lecture.Marked)
                                         {
-                                        <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowOpinions(lecture))">
-                                            <i class="fa fa-list" aria-hidden="true"></i>
-                                            Oceń
-                                        </button>
+                                            <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowOpinions(lecture))">
+                                                <i class="fa fa-list" aria-hidden="true"></i>
+                                                Oceń
+                                            </button>
                                         }
                                     </li>
                                 }
