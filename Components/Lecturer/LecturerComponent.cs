@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ZPP_Blazor.Enums;
 using ZPP_Blazor.Models;
@@ -27,6 +28,7 @@ namespace ZPP_Blazor.Components.Lecturer
         public bool SetOpinionVisible { get; set; }
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
+        public bool ShowCode { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -102,10 +104,50 @@ namespace ZPP_Blazor.Components.Lecturer
                 await LoadUseLectures();
                 StateHasChanged();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 FutureLectures.Remove(SelectedLecture);
+            }
+        }
+
+        protected async Task CheckAbsence(UserLecture lecture)
+        {
+            await SaveLectureCode(lecture);
+            ShowCode = true;
+
+        }
+
+        private async Task SaveLectureCode(UserLecture lecture)
+        {
+            SelectedLecture = lecture;
+            if(!string.IsNullOrEmpty(lecture.Code))
+            {
+                StateHasChanged();
+                return;
+            }
+            var code = new VerificationCode()
+            {
+                LectureId = lecture.Id,
+                ValidTo = lecture.Date.AddMinutes(100)
+            };
+            var content = new StringContent(Json.Serialize(code), System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                var result = await Http.PostAsync("/api/presence/code", content);
+                var jsonResult = await result.Content.ReadAsStringAsync();
+                if(!string.IsNullOrEmpty(jsonResult))
+                {
+                    var c = Json.Deserialize<VerificationCode>(jsonResult);
+                    lecture.Code = c.Code;
+                    StateHasChanged();
+                }
+                Console.WriteLine(jsonResult);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

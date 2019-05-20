@@ -56,6 +56,21 @@
                 </div>
             </div>
         </div>
+        <div class="modal" tabindex="-1" style="@(ShowCode ? "display: block" : "display: none")" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Wygenerowany kod</h5>
+                        <button type="button" class="close" onclick="@(()=> { ShowCode = false; StateHasChanged(); })" data-dismiss="modal" >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Kod do potwierdzenia obecności: </p> <h3>@SelectedLecture?.Code</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="page-header" class="border border-primary">
             <div class="row">
                 <div class="col-md-10">
@@ -100,6 +115,9 @@
                                         <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                             @lecture.Name
                                         </a>
+                                        <button class="btn btn-danger horizontal-right" onclick="@(() => CheckAbsence(lecture))">
+                                            Sprawdź obecność
+                                        </button>
                                     </li>
                                 }
                             </ul>
