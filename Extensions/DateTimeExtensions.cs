@@ -14,5 +14,10 @@ namespace ZPP_Blazor.Extensions
 
             return expectedDate.Ticks / 10000;
         }
+
+        public static DateTime ToLocalDateTime(this DateTime dateTime)
+        {
+            return dateTime.AddHours(2);
+        }
     }
 }

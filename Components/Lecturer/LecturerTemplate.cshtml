@@ -7,6 +7,7 @@
     .horizontal-right {
         float: right;
     }
+
     #page-header {
         margin-bottom: 20px;
         padding: 8px;
@@ -17,15 +18,18 @@
         padding-top: 0px;
         padding-right: 0px;
     }
+
     #sub-header {
         /*background-color: #188468;*/
         margin-left: -8px;
         margin-right: -8px;
         padding: 6px;
     }
+
     #nameHeader {
         margin-top: 8px;
     }
+
     .corner-label {
         background-color: #0A5F78;
         font-weight: bold;
@@ -33,7 +37,27 @@
         padding: 8px;
         text-align: center
     }
+    #refresh-btn {
+        float: right;
+        padding: 5px;
+        cursor: pointer;
+    }
 
+        #refresh-btn:hover {
+            color: #39A738;
+        }
+
+    .dng {
+        color: rgb(148, 72, 72);
+        font-weight: bold;
+    }
+
+    .dialog-form {
+        float: right;
+        width: 80px;
+        font-size: 12pt;
+        margin-right: 12px;
+    }
 </style>
 <div class="container">
     <div class="container-margin-top">
@@ -60,13 +84,47 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Wygenerowany kod</h5>
-                        <button type="button" class="close" onclick="@(()=> { ShowCode = false; StateHasChanged(); })" data-dismiss="modal" >
+                        @if (SelectedLecture?.Code == null)
+                        {
+                            <h5 *ngIf="!SelectedLecture.code">Generowanie kodu</h5>
+                        }
+                        else
+                        {
+                            <h5 class="modal-title">Wygenerowany kod</h5>
+                        }
+                        <button type="button" class="close" onclick="@(()=> { ShowCode = false; StateHasChanged(); })" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Kod do potwierdzenia obecności: </p> <h3>@SelectedLecture?.Code</h3>
+                        @if (CodeLoaded)
+                        {
+                            @if (SelectedLecture?.Code == null)
+                            {
+                                <div class="form-group">
+                                    <label for="minutes">Ważność kodu w minutach</label>
+                                    <input class="form-control" type="number" id="minutes" bind="ExpirationMinutes" />
+                                </div>
+                                <button class="btn btn-primary" type="button" onclick="@GetCode">Wyświetl kod</button>
+                            }
+                            else
+                            {
+                                <p>Kod do potwierdzenia obecności: </p>
+                                <h3>@SelectedLecture?.Code <i id="refresh-btn" onclick="@GetCode" class="fa fa-refresh" title="Wygeneruj nowy kod" aria-hidden="true"></i>  <input class="form-control dialog-form" title="Czas ważności w minutach" type="number" id="minutes" bind="@ExpirationMinutes" /></h3>
+                                @if (CodeIsValid)
+                                {
+                                    <p >Kod ważny do: @CodeValidTo.ToString("dd-MM-yyyy HH:mm")</p>
+                                }
+                                else
+                                { 
+                                    <p class="dng">Kod utracił ważność!</p>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <div class="loader-md"></div>
+                        }
                     </div>
                 </div>
             </div>
@@ -77,7 +135,7 @@
                     <p id="nameHeader">Zalogowano jako <span style="font-weight:bold">@User?.Name @User?.Surname</span></p>
                 </div>
                 <div class="col-md-2">
-                    <p  class="corner-label">Wykładowca</p>
+                    <p class="corner-label">Wykładowca</p>
                 </div>
             </div>
             <div id="sub-header" class="row">
