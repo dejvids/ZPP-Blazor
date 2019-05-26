@@ -37,6 +37,7 @@ namespace ZPP_Blazor.Components.Student
         public int LecturerMark { get; set; }
         public int RecommendationChance { get; set; }
         public string Comment { get; set; }
+        public string ErrorMessage { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -149,8 +150,19 @@ namespace ZPP_Blazor.Components.Student
 
         public async Task SetPresent()
         {
-            Console.WriteLine("present is set");
+            var code = new VerificationCode();
+            code.LectureId = SelectedLecture.Id;
+            code.Code = ConfirmationCode;
+
+            var content = new StringContent(Json.Serialize(code), System.Text.Encoding.UTF8, "application/json");
+           var result =  await Http.PostAsync("api/presence", content);
+            if(result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                ErrorMessage = await result.Content.ReadAsStringAsync();
+                return;
+            }
             SetPresentVisible = false;
+            await LoadUseLectures();
         }
 
         public async Task SaveOpinion()
