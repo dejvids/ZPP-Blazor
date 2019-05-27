@@ -74,6 +74,7 @@
                             <label for="code">Kod:</label>
                             <input type="text" class="form-control" id="code" bind="ConfirmationCode" />
                         </div>
+                        <p style="color: rgb(148, 72, 72)">@ErrorMessage</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { SetPresentVisible = false; SelectedLecture = null; })">Anuluj</button>

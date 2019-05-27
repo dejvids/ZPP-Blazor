@@ -9,5 +9,6 @@ namespace ZPP_Blazor.Models
         public string Place { get; set; }
         public bool Present { get; set; }
         public bool Marked { get; set; }
+        public string Code { get; set; }
     }
 }

@@ -3,8 +3,10 @@ using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ZPP_Blazor.Enums;
+using ZPP_Blazor.Extensions;
 using ZPP_Blazor.Models;
 using ZPP_Blazor.Services;
 
@@ -12,6 +14,7 @@ namespace ZPP_Blazor.Components.Lecturer
 {
     public class LecturerComponent : AppComponent
     {
+        const int CODE_EXPIRES_MINUTES = 30;
         [Inject]
         protected ILectureService _lectureService { get; set; }
         public User User { get; set; }
@@ -27,6 +30,11 @@ namespace ZPP_Blazor.Components.Lecturer
         public bool SetOpinionVisible { get; set; }
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
+        public bool ShowCode { get; set; }
+        public int ExpirationMinutes { get; set; } = 30;
+        public bool CodeLoaded { get; set; }
+        public bool CodeIsValid { get; set; }
+        public DateTime CodeValidTo { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -102,10 +110,84 @@ namespace ZPP_Blazor.Components.Lecturer
                 await LoadUseLectures();
                 StateHasChanged();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 FutureLectures.Remove(SelectedLecture);
+            }
+        }
+
+        protected async Task CheckAbsence(UserLecture lecture)
+        {
+            ExpirationMinutes = CODE_EXPIRES_MINUTES;
+            SelectedLecture = lecture;
+            CodeLoaded = false;
+            ShowCode = true;
+            await GetActiveCode();
+            CodeLoaded = true;
+        }
+
+        protected async Task GetCode()
+        {
+            if (ExpirationMinutes < 10)
+            {
+                ExpirationMinutes = 10;
+                StateHasChanged();
+            }
+            else if (ExpirationMinutes > 300)
+            {
+                ExpirationMinutes = 300;
+                StateHasChanged();
+            }
+            CodeValidTo = DateTime.Now.AddMinutes(ExpirationMinutes);
+            StateHasChanged();
+            var code = new VerificationCode()
+            {
+                LectureId = SelectedLecture.Id,
+                ValidTo = DateTime.Now.ToLocalDateTime().AddMinutes(ExpirationMinutes)
+            };
+            var content = new StringContent(Json.Serialize(code), System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                var result = await Http.PostAsync("/api/presence/code", content);
+                var jsonResult = await result.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(jsonResult))
+                {
+                    var c = Json.Deserialize<VerificationCode>(jsonResult);
+                    SelectedLecture.Code = c.Code;
+                    CodeValidTo = c.ValidTo;
+                    CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();
+                    StateHasChanged();
+                }
+                Console.WriteLine(jsonResult);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        protected async Task GetActiveCode()
+        {
+            var resullt = await Http.GetAsync($"/api/presence/code/{this.SelectedLecture.Id}");
+            if (resullt != null && resullt.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var response = await resullt.Content.ReadAsStringAsync();
+                    var activeCode = Json.Deserialize<VerificationCode>(response);
+                    SelectedLecture.Code = activeCode.Code;
+                    CodeValidTo = activeCode.ValidTo;
+                    CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();
+                    ConfirmationCode = activeCode.Code;
+                    CodeLoaded = true;
+                    StateHasChanged();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
