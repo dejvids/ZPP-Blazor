@@ -191,6 +191,11 @@ namespace ZPP_Blazor.Components.Lecturer
             }
         }
 
+        protected void Edit(UserLecture lecture)
+        {
+            this.UriHelper.NavigateTo($"/zajecia/edytuj/{lecture.Id}");
+        }
+
         protected void ShowOpinions(Models.UserLecture lecture)
         {
 

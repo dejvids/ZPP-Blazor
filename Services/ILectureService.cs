@@ -14,5 +14,6 @@ namespace ZPP_Blazor.Services
         Task<Lecture> GetLecture(int id);
         Task<IEnumerable<UserLecture>> GetMyLectures();
         Task DeleteLecture(int lectureId);
+        Task<string> UpdateLecture(Lecture lecture);
     }
 }

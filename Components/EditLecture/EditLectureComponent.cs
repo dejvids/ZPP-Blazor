@@ -3,19 +3,19 @@ using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using ZPP_Blazor.Extensions;
-using ZPP_Blazor.Models;
+using ZPP_Blazor.Services;
 
-namespace ZPP_Blazor.Components.NewLecture
+namespace ZPP_Blazor.Components.EditLecture
 {
-    public class NewLectureComponent : AppComponent
+    public class EditLectureComponent : AppComponent
     {
+        [Inject]
+        protected ILectureService _lectureService { get; set; }
         [Parameter]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; } 
+        public string Description { get; set; }
         public DateTime Date { get; set; }
         public string Place { get; set; }
         public bool ShowDialog { get; set; }
@@ -26,19 +26,20 @@ namespace ZPP_Blazor.Components.NewLecture
         protected async override Task OnInitAsync()
         {
             await base.OnInitAsync();
-            var token = await LocalStorage.GetItem<JsonWebToken>("token");
 
-            if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
+            var lecture = await _lectureService.GetLecture(int.Parse(Id));
+
+            if (lecture != null)
             {
-                UriHelper.NavigateTo("/");
-                return;
+                Name = lecture.Name;
+                Description = lecture.Description;
+                Date = lecture.Date;
+                Place = lecture.Place;
+                StateHasChanged();
             }
-
-            await base.OnInitAsync();
-            await OnAfterRenderAsync();
         }
 
-        public async Task Save()
+        protected async Task Save()
         {
             IsAlertVisible = false;
             if (!(await ValidateForm()))
@@ -47,44 +48,29 @@ namespace ZPP_Blazor.Components.NewLecture
                 return;
             }
             StateHasChanged();
-            var newLecture = new Models.Lecture()
+            var lecture = new Models.Lecture()
             {
+                Id = int.Parse(Id),
                 Name = this.Name,
-                Date = this.Date,
                 Description = this.Description,
+                Date = this.Date,
                 Place = this.Place
             };
-
-            Console.WriteLine(AppCtx.CurrentUser?.Id);
-
-            var content = new StringContent(Json.Serialize(newLecture), System.Text.Encoding.UTF8, "application/json");
-            Processing = true;
-            StateHasChanged();
             try
             {
-                var response = await Http.PostAsync("/api/lectures", content);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                var result = await _lectureService.UpdateLecture(lecture);
+                if(!string.IsNullOrEmpty(result))
                 {
-                    ShowDialog = true;
-                    StateHasChanged();
+                    Message = result;
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                else
                 {
-                    string message = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(message);
-                    Message = message;
-                    IsAlertVisible = true;
-                    StateHasChanged();
+                    UriHelper.NavigateTo("/wykladowca");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Console.WriteLine("Adding lecture failed " + ex.Message);
-            }
-            finally
-            {
-                Processing = false;
-                StateHasChanged();
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -111,7 +97,7 @@ namespace ZPP_Blazor.Components.NewLecture
                 Message = "Niepoprawna godzina zajęć";
                 return false;
             }
-            Console.WriteLine("Date is " + Date + "Today "+DateTime.Today);
+            Console.WriteLine("Date is " + Date + "Today " + DateTime.Today);
             if (Date < DateTime.Today.AddDays(1))
             {
                 Message = "Niepoprawna data zajęć";
@@ -148,6 +134,7 @@ namespace ZPP_Blazor.Components.NewLecture
                 string selectedDateAsString = Date.ToString("yyyy-MM-dd");
 
                 await JSRuntime.Current.InvokeAsync<string>("lectures.setLectureDate", selectedDateAsString);
+                await JSRuntime.Current.InvokeAsync<string>("lectures.setLectureTime", Date.ToString("HH:mm:ss"));
             }
         }
     }

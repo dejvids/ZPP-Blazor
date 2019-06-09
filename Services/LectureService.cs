@@ -124,5 +124,25 @@ namespace ZPP_Blazor.Services
             }
         }
 
+        public async Task<string> UpdateLecture(Lecture lecture)
+        {
+            var content = new StringContent(Json.Serialize(lecture), System.Text.Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await _http.PutAsync($"/api/lectures/{lecture.Id}", content);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -15,7 +15,6 @@ namespace ZPP_Blazor.Components.Lecture
         [Inject]
         protected ILectureService _lectureService { get; set; }
         public Models.Lecture CurrentLecture { get; set; } = new Models.Lecture();
-
         public bool HasJoined { get; set; }
         public string Message { get; set; }
         public bool HasError { get; private set; }
