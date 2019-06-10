@@ -30,11 +30,9 @@ namespace ZPP_Blazor.Components.NewLecture
 
             if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {
-                UriHelper.NavigateTo("/");
+                UriHelper.NavigateTo("/konto");
                 return;
             }
-
-            await base.OnInitAsync();
             await OnAfterRenderAsync();
         }
 

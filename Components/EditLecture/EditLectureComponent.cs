@@ -26,6 +26,10 @@ namespace ZPP_Blazor.Components.EditLecture
         protected async override Task OnInitAsync()
         {
             await base.OnInitAsync();
+            if (!AppCtx.CurrentUser.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
+            {
+                UriHelper.NavigateTo("/konto");
+            }
 
             var lecture = await _lectureService.GetLecture(int.Parse(Id));
 
