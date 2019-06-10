@@ -12,5 +12,10 @@ namespace ZPP_Blazor.Models
         public int LecturerMark { get; set; }
         public int RecommendationChance { get; set; }
         public string Comment { get; set; }
+
+        public override string ToString()
+        {
+            return $"Ocena tematu: {SubjectMark}/5, Ocenac wykładowcy: {LecturerMark}/5 Szamsa ma polecenie innym: {RecommendationChance}/5, komentarz: {Comment}";
+        }
     }
 }

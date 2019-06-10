@@ -38,6 +38,13 @@ namespace ZPP_Blazor.Components.Lecturer
 
         protected override async Task OnInitAsync()
         {
+            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+
+            if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
+            {
+                UriHelper.NavigateTo("/konto");
+                return;
+            }
             await base.OnInitAsync();
             Console.WriteLine("Navigated to me");
             await LoadUserDataAsync();
@@ -191,9 +198,14 @@ namespace ZPP_Blazor.Components.Lecturer
             }
         }
 
+        protected void Edit(UserLecture lecture)
+        {
+            this.UriHelper.NavigateTo($"/zajecia/edytuj/{lecture.Id}");
+        }
+
         protected void ShowOpinions(Models.UserLecture lecture)
         {
-
+            UriHelper.NavigateTo($"/opinie/{lecture.Id}");
         }
     }
 }

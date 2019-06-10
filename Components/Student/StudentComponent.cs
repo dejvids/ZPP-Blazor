@@ -42,7 +42,10 @@ namespace ZPP_Blazor.Components.Student
         protected override async Task OnInitAsync()
         {
             await base.OnInitAsync();
-            Console.WriteLine("Navigated to me");
+            if (!AppCtx.CurrentUser.Role.Equals("student", StringComparison.InvariantCultureIgnoreCase))
+            {
+                UriHelper.NavigateTo("/konto");
+            }
             await LoadUserDataAsync();
             await LoadUseLectures();
             this.StateHasChanged();

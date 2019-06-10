@@ -1,0 +1,48 @@
+﻿@page "/opinie/{Id}"
+@layout MainLayout
+@inherits OpinionsComponent
+
+<style>
+    .good {
+        background-color: forestgreen;
+    }
+
+    .average {
+        background-color: yellow;
+    }
+
+    .bad {
+        background-color: darkred;
+    }
+</style>
+<div class="container container-margin-top">
+    <NavLink class="btn link-back" href="/konto"><i class="fa fa-arrow-left" aria-hidden="true"></i><span class="margin-left-std">Powrót</span></NavLink>
+    <h1>Oceny dla zajęć:<span style="font-style: italic">@SelectedLecture?.Name</span> </h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nr</th>
+                <th>Ocena tematu</th>
+                <th>Ocena wykadowcy</th>
+                <th>Szansa na polecenie</th>
+                <th>Średnia ocena</th>
+                <th>Komentasz</th>
+            </tr>
+        </thead>
+        <tbody>
+
+                @for(int i = 0; i<Opinions.Count; i++)
+                {
+                    double avg = @Math.Round((@Opinions[i].RecommendationChance + @Opinions[i].SubjectMark + @Opinions[i].RecommendationChance) / 3.0, 2);
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td>@Opinions[i].SubjectMark</td>
+                        <td>@Opinions[i].LecturerMark</td>
+                        <td>@Opinions[i].RecommendationChance</td>
+                        <td>@avg</td>
+                        <td>@Opinions[i].Comment</td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

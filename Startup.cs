@@ -15,6 +15,7 @@ namespace ZPP_Blazor
             services.AddTransient<SignInService>();
             services.AddTransient<ILectureService,LectureService>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IOpinionService, OpinionService>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)
