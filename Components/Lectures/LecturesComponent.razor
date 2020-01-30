@@ -1,6 +1,5 @@
 ﻿@page "/zajecia/strona/{strona}"
-@layout MainLayout
-@inherits LecturesComponent
+@inherits BaseComponent
 
 <style>
     .align-right {
@@ -12,10 +11,10 @@
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-3">
             <div class="form-row">
                 <div class="col-12 col-md-9 mb-md-0">
-                    <input type="text" bind="Phrase" id="search-box" onkeypress="@OnKeyPressed" name="searchedPhrase" class="form-control form-control-lg" placeholder="Czego szukasz?" />
+                    <input type="text" bind="Phrase" id="search-box" @onkeypress="OnKeyPressed" name="searchedPhrase" class="form-control form-control-lg" placeholder="Czego szukasz?" />
                 </div>
                 <div class="col-12 col-md-3">
-                    <button type="submit" onclick="@OnSearch" class="btn btn-block btn-lg btn-primary">Wyszukaj</button>
+                    <button type="submit" @onclick="OnSearch" class="btn btn-block btn-lg btn-primary">Wyszukaj</button>
                 </div>
             </div>
         </div>
@@ -26,10 +25,10 @@
                 </button>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">      
-                    <button class="dropdown-item @(Order == Enums.OrderOption.date ? "active" : "")" onclick="@SortByDate">Data - od najwcześniejszych</button>
-                    <button class="dropdown-item @(Order == Enums.OrderOption.date_desc ? "active" : "")" onclick="@SortByDateDesc">Data - od najpóźniejszych</button>
-                    <button class="dropdown-item @(Order == Enums.OrderOption.name ? "active" : "")" onclick="@SortByName">Nazwa - od A do Z</button>
-                    <button class="dropdown-item @(Order == Enums.OrderOption.name_desc ? "active" : "")" onclick="@SoryByNameDesc">Nazwa - od Z do A</button>
+                    <button class="dropdown-item @(Order == Enums.OrderOption.date ? "active" : "")" @onclick="SortByDate">Data - od najwcześniejszych</button>
+                    <button class="dropdown-item @(Order == Enums.OrderOption.date_desc ? "active" : "")" @onclick="SortByDateDesc">Data - od najpóźniejszych</button>
+                    <button class="dropdown-item @(Order == Enums.OrderOption.name ? "active" : "")" @onclick="SortByName">Nazwa - od A do Z</button>
+                    <button class="dropdown-item @(Order == Enums.OrderOption.name_desc ? "active" : "")" @onclick="SoryByNameDesc">Nazwa - od Z do A</button>
                 </div>
             </div>
         </div>

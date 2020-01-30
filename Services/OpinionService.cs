@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Models;
 
@@ -27,7 +28,7 @@ namespace ZPP_Blazor.Services
                 {
                     var content = await result.Content.ReadAsStringAsync();
 
-                    return Json.Deserialize<List<Opinion>>(content);
+                    return JsonSerializer.Deserialize<List<Opinion>>(content);
                 }
                 return list;
             }

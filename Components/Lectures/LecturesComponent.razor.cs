@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Blazor;
-using Microsoft.AspNetCore.Blazor.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using Microsoft.JSInterop;
@@ -13,15 +13,15 @@ using ZPP_Blazor.Services;
 namespace ZPP_Blazor.Components.Lectures
 {
     [Route("/zajecia")]
-    public class LecturesEmptyComponent:BaseComponent
+    public class LecturesEmptyComponent : BaseComponent
     {
-        protected  override void OnInit()
+        protected override void OnInitialized()
         {
             UriHelper.NavigateTo("/zajecia/strona/1");
         }
     }
 
-    public class LecturesComponent : BaseComponent
+    public partial class LecturesComponent : BaseComponent
     {
         protected string Phrase { get; set; }
         protected OrderOption Order { get; set; }
@@ -30,10 +30,12 @@ namespace ZPP_Blazor.Components.Lectures
 
         public int Pages { get; set; }
         [Parameter]
-        protected string strona { get; set; }
+        public string strona { get; set; }
 
         [Inject]
         protected ILectureService _lectureService { get; set; }
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
 
         public bool IsDataLoaded { get; set; }
 
@@ -41,11 +43,12 @@ namespace ZPP_Blazor.Components.Lectures
         public LecturesComponent()
         {
         }
-        protected async override Task OnInitAsync()
+        protected async override Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             Lectures = new List<Models.Lecture>() { new Models.Lecture() };
-            var uri = new Uri(UriHelper.GetAbsoluteUri());
+
+            var uri = new Uri(UriHelper.Uri);
             Phrase = QueryHelpers.ParseQuery(uri.Query).TryGetValue("wyszukaj", out StringValues phrase) ? phrase.First() : "";
             CurrentPage = int.TryParse(QueryHelpers.ParseQuery(uri.Query).TryGetValue("strona", out StringValues page) ? page.First() : "1", out int npage) ? npage : 1;
             if (CurrentPage < 1)
@@ -68,7 +71,7 @@ namespace ZPP_Blazor.Components.Lectures
             try
             {
                 Lectures = (await _lectureService.GetLectures(CurrentPage, Phrase, Order)).ToList();
-               await  GetNumberOfPages();
+                await GetNumberOfPages();
                 Console.WriteLine("Pages " + Pages);
                 StateHasChanged();
                 Console.WriteLine("Lectures loaded");
@@ -105,11 +108,11 @@ namespace ZPP_Blazor.Components.Lectures
             await LoadData();
         }
 
-        public async Task OnKeyPressed(UIKeyboardEventArgs e)
+        public async Task OnKeyPressed(KeyboardEventArgs e)
         {
-            if(e.Key.Equals("Enter", StringComparison.InvariantCultureIgnoreCase))
+            if (e.Key.Equals("Enter", StringComparison.InvariantCultureIgnoreCase))
             {
-                Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
+                Phrase = await JSRuntime.InvokeAsync<string>("getSearchValue");
                 await LoadData();
             }
         }

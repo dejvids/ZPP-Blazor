@@ -1,5 +1,5 @@
 @page "/student"
-@inherits Student.StudentComponent
+@inherits AppComponent
 @using Enums;
 @layout MainLayout
 
@@ -44,7 +44,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Potwierdzenie</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -52,8 +52,8 @@
                         <p>Czy na pewno chcesz zrezygnować z zajęć <span style="font-style: italic;">@SelectedLecture?.Name</span>?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">Nie</button>
-                        <button type="button" class="btn btn-primary" onclick="@QuitLecture">Tak</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">Nie</button>
+                        <button type="button" class="btn btn-primary" @onclick="QuitLecture">Tak</button>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Potwierdzenie obecności</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { SetPresentVisible = false; SelectedLecture = null; })">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="(()=> { SetPresentVisible = false; SelectedLecture = null; })">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -77,8 +77,8 @@
                         <p style="color: rgb(148, 72, 72)">@ErrorMessage</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { SetPresentVisible = false; SelectedLecture = null; })">Anuluj</button>
-                        <button type="button" class="btn btn-primary" onclick="@SetPresent">Potwiedź</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="(()=> { SetPresentVisible = false; SelectedLecture = null; })">Anuluj</button>
+                        <button type="button" class="btn btn-primary" @onclick="SetPresent">Potwiedź</button>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Ocenianie zajęć</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { SetOpinionVisible = false; SelectedLecture = null; })">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="(()=> { SetOpinionVisible = false; SelectedLecture = null; })">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -184,8 +184,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { SetOpinionVisible = false; SelectedLecture = null; })">Anuluj</button>
-                        <button type="button" class="btn btn-primary" onclick="@SaveOpinion">Zapisz</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@(()=> { SetOpinionVisible = false; SelectedLecture = null; })">Anuluj</button>
+                        <button type="button" class="btn btn-primary" @onclick="SaveOpinion">Zapisz</button>
                     </div>
                 </div>
             </div>
@@ -210,13 +210,13 @@
                 {
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active" id="home-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Current)" role="tab" aria-selected="true">Aktywne</button>
+                            <button class="nav-link active" id="home-tab" data-toggle="tab" @onclick="@(()=>SelectedTab = LectureTab.Current)" role="tab" aria-selected="true">Aktywne</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="profile-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Future)" role="tab" aria-selected="false">Nadchodzące</button>
+                            <button class="nav-link" id="profile-tab" data-toggle="tab" @onclick="@(()=>SelectedTab = LectureTab.Future)" role="tab" aria-selected="false">Nadchodzące</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="contact-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Past)" role="tab" aria-selected="false">Zakończone</button>
+                            <button class="nav-link" id="contact-tab" data-toggle="tab" @onclick="@(()=>SelectedTab = LectureTab.Past)" role="tab" aria-selected="false">Zakończone</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
@@ -228,7 +228,7 @@
                                         <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                             @lecture.Name
                                         </a>
-                                        <button class="btn btn-success horizontal-right" onclick="@(()=> ShowSetPresentDialog(lecture))">
+                                        <button class="btn btn-success horizontal-right" @onclick="@(()=> ShowSetPresentDialog(lecture))">
                                             Potwierdź obecność
                                         </button>
                                     </li>
@@ -244,7 +244,7 @@
                                         <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                             @lecture.Name
                                         </a>
-                                        <button class="btn btn-danger horizontal-right" onclick="@(()=> ShowDeleteConfirmation(lecture))">
+                                        <button class="btn btn-danger horizontal-right" @onclick="@(()=> ShowDeleteConfirmation(lecture))">
                                             <i class="fa fa-sign-out" aria-hidden="true"></i>
                                             Rezygnuj
                                         </button>
@@ -263,7 +263,7 @@
                                         </a>
                                         @if (!lecture.Marked)
                                         {
-                                            <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowSetOpinionDialog(lecture))">
+                                            <button class="btn btn-secondary horizontal-right" @onclick="@(()=>ShowSetOpinionDialog(lecture))">
                                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                                 Oceń
                                             </button>

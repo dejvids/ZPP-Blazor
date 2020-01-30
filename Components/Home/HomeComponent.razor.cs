@@ -1,21 +1,23 @@
-using ZPP_Blazor.Models;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Blazor.Components;
 using Microsoft.JSInterop;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
 using ZPP_Blazor.Services;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ZPP_Blazor.Components.Home
 {
-    public class HomeComponent : BaseComponent
+    public partial class HomeComponent
     {
         [Inject]
         protected ILectureService _lectureService { get; set; }
         public List<Models.Lecture> Lectures { get; set; }
         public IEnumerable<Models.Lecture> PromotingLectures { get; set; }
+
+        [Inject]
+        IJSRuntime JSRuntime { get; set; }
 
         public Models.Lecture FirstPromoting
             => PromotingLectures?.ElementAt<Models.Lecture>(0);
@@ -31,11 +33,11 @@ namespace ZPP_Blazor.Components.Home
         public HomeComponent()
         { }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             PromotingLectures = new List<Models.Lecture> { new Models.Lecture(), new Models.Lecture(), new Models.Lecture() };
             SearchedLectures = new List<Models.Lecture>();
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             Console.WriteLine("OnInit Home component");
             if (Http == null)
             {
@@ -82,9 +84,9 @@ namespace ZPP_Blazor.Components.Home
             }
         }
 
-        public async void OnKeyPressed(UIKeyboardEventArgs e)
+        public async void OnKeyPressed(KeyboardEventArgs e)
         {
-            Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
+            Phrase = await JSRuntime.InvokeAsync<string>("getSearchValue");
             if (string.IsNullOrEmpty(Phrase) || Phrase.Count() < 4)
             {
                 Searched = false;
@@ -98,7 +100,7 @@ namespace ZPP_Blazor.Components.Home
             }
             else
             {
-                Phrase = await JSRuntime.Current.InvokeAsync<string>("getSearchValue");
+                Phrase = await JSRuntime.InvokeAsync<string>("getSearchValue");
                 if (Phrase?.Count() >= 3)
                 {
                     await Search();

@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using ZPP_Blazor.Models;
 using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Lecture
 {
-    public class LectureComponent : AppComponent
+    public partial class LectureComponent
     {
         [Inject]
         protected ILectureService _lectureService { get; set; }
@@ -19,16 +17,16 @@ namespace ZPP_Blazor.Components.Lecture
         public string Message { get; set; }
         public bool HasError { get; private set; }
         [Parameter]
-        protected string Id { get; set; }
+        public string Id { get; set; }
         public bool? UserAlreadyJoined { get; private set; }
         public bool Finished { get; set; }
 
         public LectureComponent()
         {
         }
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
 
             Console.WriteLine("Id = " + Id);
             try
@@ -67,7 +65,7 @@ namespace ZPP_Blazor.Components.Lecture
 
         protected async Task Join()
         {
-            var content = new StringContent(Json.Serialize(new { LectureId = Id }), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(new { LectureId = Id }));
 
             try
             {

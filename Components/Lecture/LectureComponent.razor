@@ -1,6 +1,5 @@
 ﻿@page "/zajecia/{Id}"
-@layout MainLayout
-@inherits LectureComponent
+@inherits AppComponent
 <style>
     h2 {
         font-size: 18pt;
@@ -63,7 +62,7 @@
             </div>
             @if (UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == false)
             {
-                <button class="btn btn-primary btn-lg btn-ok" onclick="@Join">Zapisz się!</button>
+                <button class="btn btn-primary btn-lg btn-ok" @onclick="Join">Zapisz się!</button>
             }
             else if(Finished)
             {

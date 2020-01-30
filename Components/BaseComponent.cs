@@ -1,9 +1,6 @@
 ﻿using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ZPP_Blazor.Extensions;
@@ -11,7 +8,7 @@ using ZPP_Blazor.Models;
 
 namespace ZPP_Blazor.Components
 {
-    public class BaseComponent : BlazorComponent
+    public class BaseComponent : ComponentBase
     {
         string _developBaseAddress = @"https://localhost:5001";
         string _prodBaseAddress = @"https://zpp-api.azurewebsites.net";
@@ -24,11 +21,11 @@ namespace ZPP_Blazor.Components
         protected LocalStorage LocalStorage { get; set; }
 
         [Inject]
-        protected IUriHelper UriHelper { get; set; }
+        protected NavigationManager UriHelper { get; set; }
 
         protected bool IsSigned { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             Http.BaseAddress = new Uri(_prodBaseAddress);
             AppCtx.BaseAddress = _prodBaseAddress;

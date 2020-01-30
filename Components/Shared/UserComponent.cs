@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Routing;
+﻿using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ZPP_Blazor.Components.Shared
@@ -10,10 +7,10 @@ namespace ZPP_Blazor.Components.Shared
     [Route("/konto")]
     public class UserComponent:AppComponent
     {
-        protected async override Task OnInitAsync()
+        protected async override Task OnInitializedAsync()
         {
             Console.WriteLine("User component");
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             Console.WriteLine("Current user role is " + AppCtx.CurrentUser.Role);
             if(AppCtx.CurrentUser.Role.Equals("student", StringComparison.InvariantCultureIgnoreCase))
             {

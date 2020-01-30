@@ -1,13 +1,7 @@
 using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using ZPP_Blazor.Models;
-using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.SignIn
 {
@@ -16,7 +10,7 @@ namespace ZPP_Blazor.Components.SignIn
     {
         public LogoutComponent()
         { }
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {    
             AppCtx.AccessToken = string.Empty;
             AppCtx.CurrentUser = null;

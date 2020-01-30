@@ -32,7 +32,7 @@
         <div class="container">
             <NavLink class="navbar-brand" href="/">Strona główna</NavLink>
             <button class="navbar-toggler" type="button" data-target=".navbar-collapse" aria-label="Toggle navigation"
-                    onclick="@Toggle">
+                    @onclick="Toggle">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse @(IsExpanded ? "show" : null)">
@@ -57,7 +57,7 @@
         </div>
     </nav>
 </header>
-@functions{
+@code{
     public bool IsExpanded { get; set; }
 
     public void Toggle()

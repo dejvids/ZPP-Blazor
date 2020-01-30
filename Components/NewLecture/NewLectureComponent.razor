@@ -1,6 +1,6 @@
-﻿@page "/zajecia/edytuj/{Id}"
-@layout MainLayout
-@inherits EditLectureComponent
+﻿@page "/zajecia/dodaj"
+@inherits AppComponent
+
 <style>
     .link-back {
         font-size: 16pt;
@@ -28,7 +28,7 @@
                     <div class="alert alert-success" role="alert">Zajęcia zostałe zapisane w systemie.</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="@(()=> { UriHelper.NavigateTo("/konto"); })">Ok</button>
+                    <button type="button" class="btn btn-primary" @onclick="@(()=> { UriHelper.NavigateTo("/konto"); })">Ok</button>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label for="lectureDate">Data</label>
-                <input id="lectureDate" onchange="@SelectedDateChange" type="date" required class="form-control" />
+                <input id="lectureDate" @onchange="SelectedDateChange" type="date" required class="form-control" />
             </div>
             <div class="form-group">
                 <label for="lectureDate">Godzina</label>
@@ -63,7 +63,7 @@
                 <textarea class="form-control" id="desc" rows="3" required bind="Description" placeholder="Opis wydarzenia..."></textarea>
             </div>
 
-            <button class="btn btn-primary btn-lg btn-ok" style="@(Processing ? "pointer-events:none" :"pointer-events:auto" )" type="button" onclick="@Save">Zapisz</button>
+            <button class="btn btn-primary btn-lg btn-ok" style="@(Processing ? "pointer-events:none" :"pointer-events:auto" )" type="button" @onclick="Save">Zapisz</button>
         </div>
     </div>
 

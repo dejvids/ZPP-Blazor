@@ -1,21 +1,19 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using ZPP_Blazor.Services;
+using ZPP_Blazor.Models;
 
-namespace ZPP_Blazor.Components.EditLecture
+namespace ZPP_Blazor.Components.NewLecture
 {
-    public class EditLectureComponent : AppComponent
+    public partial class NewLectureComponent
     {
-        [Inject]
-        protected ILectureService _lectureService { get; set; }
         [Parameter]
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } 
         public DateTime Date { get; set; }
         public string Place { get; set; }
         public bool ShowDialog { get; set; }
@@ -23,27 +21,22 @@ namespace ZPP_Blazor.Components.EditLecture
         public string Message { get; set; }
         public bool Processing { get; set; }
 
-        protected async override Task OnInitAsync()
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
+        protected async override Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
-            if (!AppCtx.CurrentUser.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
+            await base.OnInitializedAsync();
+            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+
+            if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {
                 UriHelper.NavigateTo("/konto");
+                return;
             }
-
-            var lecture = await _lectureService.GetLecture(int.Parse(Id));
-
-            if (lecture != null)
-            {
-                Name = lecture.Name;
-                Description = lecture.Description;
-                Date = lecture.Date;
-                Place = lecture.Place;
-                StateHasChanged();
-            }
+            await OnAfterRenderAsync(false);
         }
 
-        protected async Task Save()
+        public async Task Save()
         {
             IsAlertVisible = false;
             if (!(await ValidateForm()))
@@ -52,29 +45,44 @@ namespace ZPP_Blazor.Components.EditLecture
                 return;
             }
             StateHasChanged();
-            var lecture = new Models.Lecture()
+            var newLecture = new Models.Lecture()
             {
-                Id = int.Parse(Id),
                 Name = this.Name,
-                Description = this.Description,
                 Date = this.Date,
+                Description = this.Description,
                 Place = this.Place
             };
+
+            Console.WriteLine(AppCtx.CurrentUser?.Id);
+
+            var content = new StringContent(JsonSerializer.Serialize(newLecture), System.Text.Encoding.UTF8, "application/json");
+            Processing = true;
+            StateHasChanged();
             try
             {
-                var result = await _lectureService.UpdateLecture(lecture);
-                if(!string.IsNullOrEmpty(result))
+                var response = await Http.PostAsync("/api/lectures", content);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Message = result;
+                    ShowDialog = true;
+                    StateHasChanged();
                 }
-                else
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                    UriHelper.NavigateTo("/wykladowca");
+                    string message = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(message);
+                    Message = message;
+                    IsAlertVisible = true;
+                    StateHasChanged();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Adding lecture failed " + ex.Message);
+            }
+            finally
+            {
+                Processing = false;
+                StateHasChanged();
             }
         }
 
@@ -90,7 +98,7 @@ namespace ZPP_Blazor.Components.EditLecture
                 Message = "Opis jest wymagany";
                 return false;
             }
-            string selectedTimeAsString = await JSRuntime.Current.InvokeAsync<string>("lectures.getLectureTime");
+            string selectedTimeAsString = await JSRuntime.InvokeAsync<string>("lectures.getLectureTime");
             try
             {
                 var time = TimeSpan.Parse(selectedTimeAsString);
@@ -101,7 +109,7 @@ namespace ZPP_Blazor.Components.EditLecture
                 Message = "Niepoprawna godzina zajęć";
                 return false;
             }
-            Console.WriteLine("Date is " + Date + "Today " + DateTime.Today);
+            Console.WriteLine("Date is " + Date + "Today "+DateTime.Today);
             if (Date < DateTime.Today.AddDays(1))
             {
                 Message = "Niepoprawna data zajęć";
@@ -117,7 +125,7 @@ namespace ZPP_Blazor.Components.EditLecture
 
         protected async Task SelectedDateChange()
         {
-            string selectedDateAsString = await JSRuntime.Current.InvokeAsync<string>("lectures.getLectureDate");
+            string selectedDateAsString = await JSRuntime.InvokeAsync<string>("lectures.getLectureDate");
 
             try
             {
@@ -131,14 +139,13 @@ namespace ZPP_Blazor.Components.EditLecture
             StateHasChanged();
         }
 
-        protected override async Task OnAfterRenderAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (Date != DateTime.MinValue)
             {
                 string selectedDateAsString = Date.ToString("yyyy-MM-dd");
 
-                await JSRuntime.Current.InvokeAsync<string>("lectures.setLectureDate", selectedDateAsString);
-                await JSRuntime.Current.InvokeAsync<string>("lectures.setLectureTime", Date.ToString("HH:mm:ss"));
+                await JSRuntime.InvokeAsync<string>("lectures.setLectureDate", selectedDateAsString);
             }
         }
     }

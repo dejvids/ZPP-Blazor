@@ -1,6 +1,5 @@
 ﻿@page "/rejestracja"
-@layout MainLayout
-@inherits SignUpComponent
+@inherits BaseComponent
 
 <style>
     div .light-box {
@@ -53,7 +52,7 @@
                     <label for="password">Powtórz hasło</label>
                     <input type="password" id="rep_password" placeholder="Powtórz hasło" class="form-control" bind="RepeatedPassword" required />
                 </div>
-                <button class="btn btn-primary btn-lg btn-max-width" type="button" onclick=@SignUpAsync>Zarejestruj</button>
+                <button class="btn btn-primary btn-lg btn-max-width" type="button" @onclick=SignUpAsync>Zarejestruj</button>
                 <div class="container-margin-top">
                     <p>
                         Już mam konto.

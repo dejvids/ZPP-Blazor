@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ZPP_Blazor.Extensions;
 using ZPP_Blazor.Models;
@@ -9,8 +8,8 @@ using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Opinions
 {
-    public class OpinionsComponent : AppComponent
-    {
+    public partial class OpinionsComponent
+    { 
         [Inject]
         protected IOpinionService OpinionService { get; set; }
         [Inject]
@@ -22,9 +21,9 @@ namespace ZPP_Blazor.Components.Opinions
 
         public Models.Lecture SelectedLecture { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInit();
+            await base.OnInitializedAsync();
             var token = await LocalStorage.GetItem<JsonWebToken>("token");
 
             if (token == null || token.Expires < DateTime.Now.ToTimestamp() || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))

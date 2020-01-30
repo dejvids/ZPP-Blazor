@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Enums;
 using ZPP_Blazor.Extensions;
@@ -12,7 +12,7 @@ using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Lecturer
 {
-    public class LecturerComponent : AppComponent
+    public partial class LecturerComponent
     {
         const int CODE_EXPIRES_MINUTES = 30;
         [Inject]
@@ -36,7 +36,7 @@ namespace ZPP_Blazor.Components.Lecturer
         public bool CodeIsValid { get; set; }
         public DateTime CodeValidTo { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             var token = await LocalStorage.GetItem<JsonWebToken>("token");
 
@@ -45,7 +45,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 UriHelper.NavigateTo("/konto");
                 return;
             }
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             Console.WriteLine("Navigated to me");
             await LoadUserDataAsync();
             await LoadUseLectures();
@@ -67,7 +67,7 @@ namespace ZPP_Blazor.Components.Lecturer
             {
                 Console.WriteLine("Load user OK");
                 string jsonContent = await response.Content.ReadAsStringAsync();
-                User = Json.Deserialize<User>(jsonContent);
+                User = JsonSerializer.Deserialize<User>(jsonContent);
                 AppCtx.CurrentUser = User;
             }
 
@@ -153,7 +153,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 LectureId = SelectedLecture.Id,
                 ValidTo = DateTime.Now.ToLocalDateTime().AddMinutes(ExpirationMinutes)
             };
-            var content = new StringContent(Json.Serialize(code), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(code), System.Text.Encoding.UTF8, "application/json");
 
             try
             {
@@ -161,7 +161,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 var jsonResult = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(jsonResult))
                 {
-                    var c = Json.Deserialize<VerificationCode>(jsonResult);
+                    var c = JsonSerializer.Deserialize<VerificationCode>(jsonResult);
                     SelectedLecture.Code = c.Code;
                     CodeValidTo = c.ValidTo;
                     CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();
@@ -183,7 +183,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 try
                 {
                     var response = await resullt.Content.ReadAsStringAsync();
-                    var activeCode = Json.Deserialize<VerificationCode>(response);
+                    var activeCode = JsonSerializer.Deserialize<VerificationCode>(response);
                     SelectedLecture.Code = activeCode.Code;
                     CodeValidTo = activeCode.ValidTo;
                     CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();

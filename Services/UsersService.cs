@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Models;
 
@@ -31,7 +32,7 @@ namespace ZPP_Blazor.Services
                 }
                 Console.WriteLine(result);
                 string jsonCOntent = await result.Content.ReadAsStringAsync();
-                return Json.Deserialize<List<UserDetail>>(jsonCOntent);
+                return JsonSerializer.Deserialize<List<UserDetail>>(jsonCOntent);
             }
             catch(Exception)
             {
@@ -43,7 +44,7 @@ namespace ZPP_Blazor.Services
         {
             try
             {
-                var content = new StringContent(Json.Serialize(roleDto), System.Text.Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonSerializer.Serialize(roleDto), System.Text.Encoding.UTF8, "application/json");
                 var result = await _http.PutAsync("/api/users/set-role", content);
                 if(result.StatusCode != System.Net.HttpStatusCode.OK)
                 {

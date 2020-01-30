@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Enums;
 using ZPP_Blazor.Models;
@@ -26,7 +27,7 @@ namespace ZPP_Blazor.Services
                 if (result == null)
                     throw new Exception("Błąd serwera");
                 string content = await result.Content.ReadAsStringAsync();
-                return Json.Deserialize<Models.Lecture>(content);
+                return JsonSerializer.Deserialize<Lecture>(content);
             }
             catch (Exception ex)
             {
@@ -47,7 +48,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    var lectures = Json.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
+                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
                     return lectures;
                 }
                 catch (Exception ex)
@@ -75,7 +76,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    var lectures = Json.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
+                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
                     return lectures;
                 }
                 catch (Exception ex)
@@ -98,7 +99,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    return Json.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync());
+                    return JsonSerializer.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync());
                 }
                 catch (Exception ex)
                 {
@@ -126,7 +127,7 @@ namespace ZPP_Blazor.Services
 
         public async Task<string> UpdateLecture(Lecture lecture)
         {
-            var content = new StringContent(Json.Serialize(lecture), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(lecture), System.Text.Encoding.UTF8, "application/json");
             try
             {
                 var response = await _http.PutAsync($"/api/lectures/{lecture.Id}", content);

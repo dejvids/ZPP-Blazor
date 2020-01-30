@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Enums;
 using ZPP_Blazor.Models;
@@ -10,9 +10,8 @@ using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.Administrator
 {
-    public class AdministratorComponent : AppComponent
+    public partial class AdministratorComponent
     {
-
         [Inject]
         public IUsersService _usersService { get; set; }
         protected List<UserDetail> Users { get; private set; } = new List<UserDetail>();
@@ -32,9 +31,9 @@ namespace ZPP_Blazor.Components.Administrator
             set { _selectedRole = value; SelectedCompany = Companies.FirstOrDefault(); StateHasChanged(); }
         }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             await LoadUsers();
             await LoadCompanies();
 
@@ -62,7 +61,7 @@ namespace ZPP_Blazor.Components.Administrator
                 var result = await Http.GetAsync("/api/companies");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Companies = Json.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
+                    Companies = JsonSerializer.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
                     SelectedCompany = Companies.FirstOrDefault();
                     StateHasChanged();
                 }

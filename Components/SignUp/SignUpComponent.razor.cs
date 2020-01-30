@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using ZPP_Blazor.Models;
 
 namespace ZPP_Blazor.Components.SignUp
 {
-    public class SignUpComponent : BaseComponent
+    public partial class SignUpComponent 
     {
         public string Message { get; set; }
         public bool IsAlertVisible { get; set; }
@@ -19,9 +20,9 @@ namespace ZPP_Blazor.Components.SignUp
         public string Surname { get; set; }
         public string Password { get; set; }
         public string RepeatedPassword { get; set; }
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             if(IsSigned)
             {
                 UriHelper.NavigateTo("/profil");
@@ -37,7 +38,7 @@ namespace ZPP_Blazor.Components.SignUp
             }
 
             var user = new SignUpModel { Login = Login, Email = Email, Surname = this.Surname, Name = this.Name, Password = this.Password };
-            var content = new StringContent(Json.Serialize(user), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(user));
             var result = await Http.PostAsync(@"/api/sign-up", content);
 
             if (result == null)
@@ -49,7 +50,7 @@ namespace ZPP_Blazor.Components.SignUp
             SignUpResult response;
             try
             {
-                response = Json.Deserialize<SignUpResult>(await result.Content.ReadAsStringAsync());
+                response = JsonSerializer.Deserialize<SignUpResult>(await result.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
             {

@@ -1,7 +1,6 @@
 ﻿@page "/wykladowca"
 @using Enums
-@inherits LecturerComponent
-@layout MainLayout
+@inherits AppComponent
 
 <style>
     .horizontal-right {
@@ -66,7 +65,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Potwierdzenie</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="()=> { DeleteConfVisible = false; SelectedLecture = null; }">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -74,8 +73,8 @@
                         <p>Czy na pewno chcesz usunąć zajęcia <span style="font-style: italic;">@SelectedLecture?.Name</span>?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@(()=> { DeleteConfVisible = false; SelectedLecture = null; })">Nie</button>
-                        <button type="button" class="btn btn-primary" onclick="@DeleteLecture">Tak</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=> { DeleteConfVisible = false; SelectedLecture = null; }">Nie</button>
+                        <button type="button" class="btn btn-primary"@onclick="DeleteLecture">Tak</button>
                     </div>
                 </div>
             </div>
@@ -92,7 +91,7 @@
                         {
                             <h5 class="modal-title">Wygenerowany kod</h5>
                         }
-                        <button type="button" class="close" onclick="@(()=> { ShowCode = false; StateHasChanged(); })" data-dismiss="modal">
+                        <button type="button" class="close" @onclick="()=> { ShowCode = false; StateHasChanged(); }" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -105,12 +104,12 @@
                                     <label for="minutes">Ważność kodu w minutach</label>
                                     <input class="form-control" type="number" id="minutes" bind="ExpirationMinutes" />
                                 </div>
-                                <button class="btn btn-primary" type="button" onclick="@GetCode">Wyświetl kod</button>
+                                <button class="btn btn-primary" type="button" @onclick="GetCode">Wyświetl kod</button>
                             }
                             else
                             {
                                 <p>Kod do potwierdzenia obecności: </p>
-                                <h3>@SelectedLecture?.Code <i id="refresh-btn" onclick="@GetCode" class="fa fa-refresh" title="Wygeneruj nowy kod" aria-hidden="true"></i>  <input class="form-control dialog-form" title="Czas ważności w minutach" type="number" id="minutes" bind="@ExpirationMinutes" /></h3>
+                                <h3>@SelectedLecture?.Code <i id="refresh-btn" @onclick="GetCode" class="fa fa-refresh" title="Wygeneruj nowy kod" aria-hidden="true"></i>  <input class="form-control dialog-form" title="Czas ważności w minutach" type="number" id="minutes" bind="@ExpirationMinutes" /></h3>
                                 @if (CodeIsValid)
                                 {
                                     <p >Kod ważny do: @CodeValidTo.ToString("dd-MM-yyyy HH:mm")</p>
@@ -155,13 +154,13 @@
                 {
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active" id="home-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Current)" role="tab" aria-selected="true">Aktywne</button>
+                            <button class="nav-link active" id="home-tab" data-toggle="tab" @onclick="()=>SelectedTab = LectureTab.Current" role="tab" aria-selected="true">Aktywne</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="profile-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Future)" role="tab" aria-selected="false">Nadchodzące</button>
+                            <button class="nav-link" id="profile-tab" data-toggle="tab" @onclick="()=>SelectedTab = LectureTab.Future" role="tab" aria-selected="false">Nadchodzące</button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" id="contact-tab" data-toggle="tab" onclick="@(()=>SelectedTab = LectureTab.Past)" role="tab" aria-selected="false">Zakończone</button>
+                            <button class="nav-link" id="contact-tab" data-toggle="tab" @onclick="()=>SelectedTab = LectureTab.Past" role="tab" aria-selected="false">Zakończone</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
@@ -173,7 +172,7 @@
                                         <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                             @lecture.Name
                                         </a>
-                                        <button class="btn btn-danger horizontal-right" onclick="@(() => CheckAbsence(lecture))">
+                                        <button class="btn btn-danger horizontal-right" @onclick="() => CheckAbsence(lecture)">
                                             Sprawdź obecność
                                         </button>
                                     </li>
@@ -189,11 +188,11 @@
                                     <a class="btn btn-link" href="/zajecia/@lecture.Id">
                                         @lecture.Name
                                     </a>
-                                    <button class="btn btn-danger horizontal-right" onclick="@(()=> ShowDeleteConfirmation(lecture))">
+                                    <button class="btn btn-danger horizontal-right" @onclick="()=> ShowDeleteConfirmation(lecture)">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                         Usuń
                                     </button>
-                                    <button class="btn btn-danger horizontal-right mr-1" onclick="@(()=> Edit(lecture))">
+                                    <button class="btn btn-danger horizontal-right mr-1" @onclick="()=> Edit(lecture)">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                         Edytuj
                                     </button>
@@ -212,7 +211,7 @@
                                         </a>
                                         @if (!lecture.Marked)
                                         {
-                                            <button class="btn btn-secondary horizontal-right" onclick="@(()=>ShowOpinions(lecture))">
+                                            <button class="btn btn-secondary horizontal-right" @onclick="()=>ShowOpinions(lecture)">
                                                 <i class="fa fa-list" aria-hidden="true"></i>
                                                 Oceń
                                             </button>

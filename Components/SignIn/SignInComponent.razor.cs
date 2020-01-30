@@ -1,18 +1,15 @@
-﻿using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZPP_Blazor.Models;
 using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor.Components.SignIn
 {
-    public class SignInComponent : BaseComponent
+    public partial class SignInComponent
     {
         [Inject]
         public SignInService SignInService { get; set; }
@@ -23,9 +20,12 @@ namespace ZPP_Blazor.Components.SignIn
         public string ErrorMessage { get; set; }
         public bool IsAlertVisible { get; set; }
 
-        protected override async Task OnInitAsync()
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
+
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             if (IsSigned)
             {
                 UriHelper.NavigateTo("/konto");
@@ -46,7 +46,7 @@ namespace ZPP_Blazor.Components.SignIn
             }
             var user = new LoginUser { Login = Login, Password = Password };
             Console.WriteLine("User: " + user.Login + " " + user.Password);
-            var content = new StringContent(Json.Serialize(user), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(user));
             var result = await Http.PostAsync(@"/api/sign-in", content);
             Console.WriteLine(result);
             if (SignInService is null)
@@ -64,7 +64,7 @@ namespace ZPP_Blazor.Components.SignIn
             {
                 ErrorMessage = "Logowanie zakończone niepowodzeniem.";
             }
-            var obj = Json.Deserialize<SignInResult>(response);
+            var obj = JsonSerializer.Deserialize<SignInResult>(response);
 
             if (obj == null)
             {
@@ -76,7 +76,7 @@ namespace ZPP_Blazor.Components.SignIn
                 await SignInService.HandleSignIn(obj);
                 // UriHelper.NavigateTo("/profil");
                 IsSigned = true;
-                await JSRuntime.Current.InvokeAsync<bool>("reload", "/konto");
+                await JSRuntime.InvokeAsync<bool>("reload", "/konto");
             }
             else
             {

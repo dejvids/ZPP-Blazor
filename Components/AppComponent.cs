@@ -8,9 +8,9 @@ namespace ZPP_Blazor.Components
 {
     public class AppComponent : BaseComponent
     {
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
 
             //var token = AppCtx.AccessToken ?? (await SessionStorage.GetItem<JsonWebToken>("token"))?.AccessToken ?? (await LocalStorage.GetItem<JsonWebToken>("token"))?.AccessToken;
             if (IsSigned)

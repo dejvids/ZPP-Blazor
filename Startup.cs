@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Blazor.Builder;
 using Blazor.Extensions.Storage;
+using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ZPP_Blazor.Services;
 
@@ -17,8 +17,7 @@ namespace ZPP_Blazor
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IOpinionService, OpinionService>();
         }
-
-        public void Configure(IBlazorApplicationBuilder app)
+        public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
         }

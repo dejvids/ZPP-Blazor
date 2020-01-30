@@ -2,20 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ZPP_Blazor.Enums;
 using ZPP_Blazor.Models;
 using ZPP_Blazor.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ZPP_Blazor.Components.Student
 {
 
-    public class StudentComponent : AppComponent
+    public partial class StudentComponent
     {
         [Inject]
         protected ILectureService _lectureService { get; set; }
@@ -32,6 +30,8 @@ namespace ZPP_Blazor.Components.Student
         public bool SetOpinionVisible { get; set; }
         public string ConfirmationCode { get; set; }
         public Models.UserLecture SelectedLecture { get; set; }
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
 
         public int SubjectMark { get; set; }
         public int LecturerMark { get; set; }
@@ -39,9 +39,9 @@ namespace ZPP_Blazor.Components.Student
         public string Comment { get; set; }
         public string ErrorMessage { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
             if (!AppCtx.CurrentUser.Role.Equals("student", StringComparison.InvariantCultureIgnoreCase))
             {
                 UriHelper.NavigateTo("/konto");
@@ -66,7 +66,7 @@ namespace ZPP_Blazor.Components.Student
             {
                 Console.WriteLine("Load user OK");
                 string jsonContent = await response.Content.ReadAsStringAsync();
-                User = Json.Deserialize<User>(jsonContent);
+                User = JsonSerializer.Deserialize<User>(jsonContent);
                 AppCtx.CurrentUser = User;
             }
 
@@ -157,7 +157,7 @@ namespace ZPP_Blazor.Components.Student
             code.LectureId = SelectedLecture.Id;
             code.Code = ConfirmationCode;
 
-            var content = new StringContent(Json.Serialize(code), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(code), System.Text.Encoding.UTF8, "application/json");
            var result =  await Http.PostAsync("api/presence", content);
             if(result.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
@@ -172,9 +172,9 @@ namespace ZPP_Blazor.Components.Student
         {
             Console.WriteLine("Opinion set");
 
-            this.SubjectMark = await JSRuntime.Current.InvokeAsync<int>("opinions.getLectureOpinion");
-            this.LecturerMark = await JSRuntime.Current.InvokeAsync<int>("opinions.getLecturerOpinion");
-            this.RecommendationChance = await JSRuntime.Current.InvokeAsync<int>("opinions.getRecommendationChance");
+            this.SubjectMark = await JSRuntime.InvokeAsync<int>("opinions.getLectureOpinion");
+            this.LecturerMark = await JSRuntime.InvokeAsync<int>("opinions.getLecturerOpinion");
+            this.RecommendationChance = await JSRuntime.InvokeAsync<int>("opinions.getRecommendationChance");
             
 
             var opinion = new Opinion()
@@ -186,7 +186,7 @@ namespace ZPP_Blazor.Components.Student
                 Comment = this.Comment
             };
 
-            var content = new StringContent(Json.Serialize(opinion), System.Text.Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(opinion), System.Text.Encoding.UTF8, "application/json");
             try
             {
                 await Http.PostAsync("/api/opinions", content);
