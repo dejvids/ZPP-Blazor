@@ -61,7 +61,7 @@ namespace ZPP_Blazor.Components.Administrator
                 var result = await Http.GetAsync("/api/companies");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Companies = JsonSerializer.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
+                    Companies = JsonSerializer.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
                     SelectedCompany = Companies.FirstOrDefault();
                     StateHasChanged();
                 }
@@ -129,9 +129,12 @@ namespace ZPP_Blazor.Components.Administrator
 
         protected void ShowDeleteConfirmation(UserDetail user)
         {
-            DeleteConfVisible = true;
-            SelectedUser = user;
-            StateHasChanged();
+            if (user.RoleId == (int)Role.Student || user.RoleId == (int)Role.Wykładowca)
+            {
+                DeleteConfVisible = true;
+                SelectedUser = user;
+                StateHasChanged(); 
+            }
         }
 
         protected async Task DeleteUser()

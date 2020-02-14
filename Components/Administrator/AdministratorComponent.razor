@@ -47,7 +47,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Uprawnienia</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="()=> { ShowUserRole = false; StateHasChanged(); }">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="()=> { ShowUserRole = false; StateHasChanged(); }">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -82,7 +82,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="()=> { ShowUserRole = false; StateHasChanged(); }">Anuluj</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=> { ShowUserRole = false; StateHasChanged(); }">Anuluj</button>
                     <button type="button" class="btn btn-primary" @onclick="SetRole">Zapisz</button>
                 </div>
             </div>
@@ -96,7 +96,7 @@
             {
                 <li class="list-group-item">
                     @user.Login - @user.Name @user.Surname
-                    <button class="btn btn-danger horizontal-right btn-std-margin" @onclick="()=> ShowDeleteConfirmation(user)">
+                    <button class="btn btn-danger horizontal-right btn-std-margin @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "")" @onclick="()=> ShowDeleteConfirmation(user)">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                         Usuń
                     </button>

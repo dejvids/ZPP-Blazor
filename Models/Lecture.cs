@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace ZPP_Blazor.Models
 {
@@ -12,8 +13,7 @@ namespace ZPP_Blazor.Models
         public int LecturerId { get; set; }
         public string LecturerName { get; set; }
         public string LecturerSurname { get; set; }
-        public string LecturerFullName
-            => $"{LecturerName} {LecturerSurname}";
+        public string LecturerFullName => $"{LecturerName} {LecturerSurname}";
         public int NumberOfParticipants {get; set;}
 
         public override string ToString()

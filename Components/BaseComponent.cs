@@ -1,4 +1,4 @@
-﻿using Blazor.Extensions.Storage;
+﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Net.Http;
@@ -10,25 +10,25 @@ namespace ZPP_Blazor.Components
 {
     public class BaseComponent : ComponentBase
     {
-        string _developBaseAddress = @"https://localhost:5001";
+        string _developBaseAddress = @"http://localhost:5000";
         string _prodBaseAddress = @"https://zpp-api.azurewebsites.net";
         [Inject]
         protected HttpClient Http { get; set; }
-        [Inject]
-        protected SessionStorage SessionStorage { get; set; }
 
         [Inject]
-        protected LocalStorage LocalStorage { get; set; }
+        protected ILocalStorageService LocalStorage { get; set; }
 
         [Inject]
         protected NavigationManager UriHelper { get; set; }
 
+        [Inject]
+        public AppState AppState { get; set; }
         protected bool IsSigned { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Http.BaseAddress = new Uri(_prodBaseAddress);
-            AppCtx.BaseAddress = _prodBaseAddress;
+            //Http.BaseAddress = new Uri(_prodBaseAddress);
+            AppCtx.BaseAddress = _developBaseAddress;
 
             this.IsSigned = false;
 
@@ -36,7 +36,7 @@ namespace ZPP_Blazor.Components
             {
                 Console.WriteLine("localstorage is null");
             }
-            var jwt = await LocalStorage.GetItem<JsonWebToken>("token");
+            var jwt = await LocalStorage.GetItemAsync<JsonWebToken>("token");
             if (jwt != null)
             {
                 Console.WriteLine("Expires:" + jwt.Expires);
@@ -49,14 +49,14 @@ namespace ZPP_Blazor.Components
                 else
                 {
                     this.IsSigned = false;
-                    await LocalStorage.RemoveItem("token");
+                    await LocalStorage.RemoveItemAsync("token");
                 }
             }
             else
             {
                 this.IsSigned = false;
             }
-             this.StateHasChanged();
+            AppState.SetSignInStatus(IsSigned);
         }
     }
 }

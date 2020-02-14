@@ -23,6 +23,9 @@ namespace ZPP_Blazor.Components.SignIn
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
 
+        [Inject]
+        public AppState AppState { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -46,25 +49,32 @@ namespace ZPP_Blazor.Components.SignIn
             }
             var user = new LoginUser { Login = Login, Password = Password };
             Console.WriteLine("User: " + user.Login + " " + user.Password);
-            var content = new StringContent(JsonSerializer.Serialize(user));
+            var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var result = await Http.PostAsync(@"/api/sign-in", content);
             Console.WriteLine(result);
-            if (SignInService is null)
-            {
-                Console.WriteLine("Sign in null");
-                return;
-            }
+
             if (result == null)
             {
                 Console.WriteLine("Result null");
                 return;
             }
             var response = await result.Content?.ReadAsStringAsync();
+            Console.WriteLine(response);
             if (response == null)
             {
                 ErrorMessage = "Logowanie zakończone niepowodzeniem.";
             }
-            var obj = JsonSerializer.Deserialize<SignInResult>(response);
+
+            SignInResult obj = null;
+            try
+            {
+                obj = JsonSerializer.Deserialize<SignInResult>(response, AppCtx.JsonOptions);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Console.WriteLine($"obj:{obj}");
 
             if (obj == null)
             {
@@ -76,7 +86,8 @@ namespace ZPP_Blazor.Components.SignIn
                 await SignInService.HandleSignIn(obj);
                 // UriHelper.NavigateTo("/profil");
                 IsSigned = true;
-                await JSRuntime.InvokeAsync<bool>("reload", "/konto");
+                AppState.SetSignInStatus(true);
+                UriHelper.NavigateTo("/konto");
             }
             else
             {
@@ -90,8 +101,9 @@ namespace ZPP_Blazor.Components.SignIn
         public void SignInFacebook()
         {
             Console.WriteLine("Facebook login");
-
-            UriHelper.NavigateTo($"{AppCtx.BaseAddress}/sign-in-facebook/blazor");
+            string url = $"{AppCtx.BaseAddress}/sign-in-facebook/blazor";
+            Console.WriteLine(url);
+            UriHelper.NavigateTo(url);
             // await HandleSignIn(result);
         }
 

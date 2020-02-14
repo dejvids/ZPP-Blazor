@@ -38,7 +38,7 @@ namespace ZPP_Blazor.Components.Lecturer
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+            var token = await LocalStorage.GetItemAsync<JsonWebToken>("token");
 
             if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -67,7 +67,7 @@ namespace ZPP_Blazor.Components.Lecturer
             {
                 Console.WriteLine("Load user OK");
                 string jsonContent = await response.Content.ReadAsStringAsync();
-                User = JsonSerializer.Deserialize<User>(jsonContent);
+                User = JsonSerializer.Deserialize<User>(jsonContent, AppCtx.JsonOptions);
                 AppCtx.CurrentUser = User;
             }
 
@@ -161,7 +161,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 var jsonResult = await result.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(jsonResult))
                 {
-                    var c = JsonSerializer.Deserialize<VerificationCode>(jsonResult);
+                    var c = JsonSerializer.Deserialize<VerificationCode>(jsonResult, AppCtx.JsonOptions);
                     SelectedLecture.Code = c.Code;
                     CodeValidTo = c.ValidTo;
                     CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();
@@ -183,7 +183,7 @@ namespace ZPP_Blazor.Components.Lecturer
                 try
                 {
                     var response = await resullt.Content.ReadAsStringAsync();
-                    var activeCode = JsonSerializer.Deserialize<VerificationCode>(response);
+                    var activeCode = JsonSerializer.Deserialize<VerificationCode>(response, AppCtx.JsonOptions);
                     SelectedLecture.Code = activeCode.Code;
                     CodeValidTo = activeCode.ValidTo;
                     CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();

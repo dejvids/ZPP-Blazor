@@ -102,14 +102,14 @@
                             {
                                 <div class="form-group">
                                     <label for="minutes">Ważność kodu w minutach</label>
-                                    <input class="form-control" type="number" id="minutes" bind="ExpirationMinutes" />
+                                    <input class="form-control" type="number" id="minutes" @bind="ExpirationMinutes" />
                                 </div>
                                 <button class="btn btn-primary" type="button" @onclick="GetCode">Wyświetl kod</button>
                             }
                             else
                             {
                                 <p>Kod do potwierdzenia obecności: </p>
-                                <h3>@SelectedLecture?.Code <i id="refresh-btn" @onclick="GetCode" class="fa fa-refresh" title="Wygeneruj nowy kod" aria-hidden="true"></i>  <input class="form-control dialog-form" title="Czas ważności w minutach" type="number" id="minutes" bind="@ExpirationMinutes" /></h3>
+                                <h3>@SelectedLecture?.Code <i id="refresh-btn" @onclick="GetCode" class="fa fa-refresh" title="Wygeneruj nowy kod" aria-hidden="true"></i>  <input class="form-control dialog-form" title="Czas ważności w minutach" type="number" id="minutes" @bind="@ExpirationMinutes" /></h3>
                                 @if (CodeIsValid)
                                 {
                                     <p >Kod ważny do: @CodeValidTo.ToString("dd-MM-yyyy HH:mm")</p>

@@ -65,7 +65,7 @@ namespace ZPP_Blazor.Components.Lecture
 
         protected async Task Join()
         {
-            var content = new StringContent(JsonSerializer.Serialize(new { LectureId = Id }));
+            var content = new StringContent(JsonSerializer.Serialize(new { LectureId = Id }), System.Text.Encoding.UTF8, "application/json");
 
             try
             {

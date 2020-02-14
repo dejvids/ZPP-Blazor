@@ -38,7 +38,7 @@ namespace ZPP_Blazor.Components.SignUp
             }
 
             var user = new SignUpModel { Login = Login, Email = Email, Surname = this.Surname, Name = this.Name, Password = this.Password };
-            var content = new StringContent(JsonSerializer.Serialize(user));
+            var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var result = await Http.PostAsync(@"/api/sign-up", content);
 
             if (result == null)
@@ -50,7 +50,7 @@ namespace ZPP_Blazor.Components.SignUp
             SignUpResult response;
             try
             {
-                response = JsonSerializer.Deserialize<SignUpResult>(await result.Content.ReadAsStringAsync());
+                response = JsonSerializer.Deserialize<SignUpResult>(await result.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
             }
             catch (Exception ex)
             {

@@ -66,7 +66,7 @@ namespace ZPP_Blazor.Components.Student
             {
                 Console.WriteLine("Load user OK");
                 string jsonContent = await response.Content.ReadAsStringAsync();
-                User = JsonSerializer.Deserialize<User>(jsonContent);
+                User = JsonSerializer.Deserialize<User>(jsonContent, AppCtx.JsonOptions);
                 AppCtx.CurrentUser = User;
             }
 

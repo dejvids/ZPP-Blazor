@@ -26,7 +26,7 @@ namespace ZPP_Blazor.Components.NewLecture
         protected async override Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+            var token = await LocalStorage.GetItemAsync<JsonWebToken>("token");
 
             if (token == null || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {

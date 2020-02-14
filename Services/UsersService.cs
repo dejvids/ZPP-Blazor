@@ -32,7 +32,7 @@ namespace ZPP_Blazor.Services
                 }
                 Console.WriteLine(result);
                 string jsonCOntent = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<UserDetail>>(jsonCOntent);
+                return JsonSerializer.Deserialize<List<UserDetail>>(jsonCOntent, AppCtx.JsonOptions);
             }
             catch(Exception)
             {

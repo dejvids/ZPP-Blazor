@@ -30,27 +30,27 @@
                 <div class="alert alert-danger" style="@(IsAlertVisible ? "visibility:visible;" : "display:none;")" role="alert">@Message</div>
                 <div class="form-group">
                     <label for="login">Login</label>
-                    <input type="text" id="login" placeholder="Podaj login" class="form-control" bind="Login" required />
+                    <input type="text" id="login" placeholder="Podaj login" class="form-control" @bind="Login" required />
                 </div>
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="Podaj adres e-mail" class="form-control" bind="Email" required />
+                    <input type="email" id="email" placeholder="Podaj adres e-mail" class="form-control" @bind="Email" required />
                 </div>
                 <div class="form-group">
                     <label for="name">Imię</label>
-                    <input type="text" id="name" placeholder="Podaj imię" class="form-control" bind="Name" />
+                    <input type="text" id="name" placeholder="Podaj imię" class="form-control" @bind="Name" />
                 </div>
                 <div class="form-group">
                     <label for="name">Nazwisko </label>
-                    <input type="text" id="name" placeholder="Podaj nazwisko" class="form-control" bind="Surname" />
+                    <input type="text" id="name" placeholder="Podaj nazwisko" class="form-control" @bind="Surname" />
                 </div>
                 <div class="form-group">
                     <label for="password">Hasło</label>
-                    <input type="password" id="password" placeholder="Podaj hasło" class="form-control" bind="Password" required />
+                    <input type="password" id="password" placeholder="Podaj hasło" class="form-control" @bind="Password" required />
                 </div>
                 <div class="form-group">
                     <label for="password">Powtórz hasło</label>
-                    <input type="password" id="rep_password" placeholder="Powtórz hasło" class="form-control" bind="RepeatedPassword" required />
+                    <input type="password" id="rep_password" placeholder="Powtórz hasło" class="form-control" @bind="RepeatedPassword" required />
                 </div>
                 <button class="btn btn-primary btn-lg btn-max-width" type="button" @onclick=SignUpAsync>Zarejestruj</button>
                 <div class="container-margin-top">

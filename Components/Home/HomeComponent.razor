@@ -66,7 +66,9 @@
         margin-left: auto;
         margin-right: auto;
     }
-
+    .card-title-bold {
+        font-weight: bold;
+    }
 </style>
 <header class=" row masthead text-white text-center centered">
     <div class="overlay"></div>
@@ -98,45 +100,54 @@
 </header>
 <div class="container main-panel">
     <div class="row">
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@FirstPromoting?.Name</h2>
-                    <p class="card-text">@FirstPromoting?.Description</p>
-                </div>
-                <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
-                <div class="card-footer">
-                    <a href="/zajecia/@FirstPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
-                    <span class="align-right">Data: @(FirstPromoting.Date == default(DateTime) ? "__-__-____" : FirstPromoting.Date.ToString("dd-MM-yyyy"))</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@SecondPromoting?.Name</h2>
-                    <p class="card-text">@SecondPromoting?.Description</p>
-                </div>
-                <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
-                <div class="card-footer">
-                    <a href="/zajecia/@SecondPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
-                    <span class="align-right">Data: @(SecondPromoting.Date == default(DateTime) ? "__-__-____" : SecondPromoting.Date.ToString("dd-MM-yyyy"))</span>
+        @if (DataLoaded && PromotingLectures?.Count() >= 1)
+        {
+            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
+                        <h5 class="card-title card-title-bold">@FirstPromoting?.Name</h5>
+                        <p class="card-text">@FirstPromoting?.Description</p>
+                    </div>
+                    <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
+                    <div class="card-footer">
+                        <a href="/zajecia/@FirstPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                        <span class="align-right">Data: @(FirstPromoting.Date == default(DateTime) ? "__-__-____" : FirstPromoting.Date.ToString("dd-MM-yyyy"))</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 mb-5">
-            <div class="card h-100">
-                <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
-                    <h2 class="card-title">@ThirdPromoting?.Name</h2>
-                    <p class="card-text">@ThirdPromoting?.Description</p>
-                </div>
-                <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
-                <div class="card-footer">
-                    <a href="/zajecia/@ThirdPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
-                    <span class="align-right">Data: @(ThirdPromoting.Date == default(DateTime) ? "__-__-____" : ThirdPromoting.Date.ToString("dd-MM-yyyy"))</span>
+        }
+        @if (DataLoaded && PromotingLectures?.Count() >= 2)
+        {
+            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
+                        <h5 class="card-title card-title-bold">@SecondPromoting?.Name</h5>
+                        <p class="card-text">@SecondPromoting?.Description</p>
+                    </div>
+                    <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
+                    <div class="card-footer">
+                        <a href="/zajecia/@SecondPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                        <span class="align-right">Data: @(SecondPromoting.Date == default(DateTime) ? "__-__-____" : SecondPromoting.Date.ToString("dd-MM-yyyy"))</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        @if (DataLoaded && PromotingLectures?.Count() == 3)
+        {
+            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <div class="card-body" style="@(DataLoaded ? "visibility:visible;" : "visibility:hidden;")">
+                        <h5 class="card-title card-title-bold">@ThirdPromoting?.Name</h5>
+                        <p class="card-text">@ThirdPromoting?.Description</p>
+                    </div>
+                    <div class="loader-md" style="@(!DataLoaded ? "display:block;" : "display:none")"></div>
+                    <div class="card-footer">
+                        <a href="/zajecia/@ThirdPromoting?.Id" style="@(DataLoaded ? "pointer-events:auto" : "pointer-events:none")" class="btn btn-primary btn-sm">Więcej</a>
+                        <span class="align-right">Data: @(ThirdPromoting.Date == default(DateTime) ? "__-__-____" : ThirdPromoting.Date.ToString("dd-MM-yyyy"))</span>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 <div class="text-center">

@@ -1,7 +1,7 @@
 ﻿@inherits ZPP_Blazor.Components.BaseComponent
-@inject LocalStorage localStorage
 @using ZPP_Blazor.Models;
 @using ZPP_Blazor.Extensions;
+@inject AppState AppState;
 <style>
     a.navbar-brand {
         white-space: normal;
@@ -41,16 +41,16 @@
                         <NavLink class="nav-link" href="zajecia/strona/1">Zajęcia</NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="logowanie" style="@(!IsSigned ? "visibility:visible;" : "display:none;")">Logowanie</NavLink>
+                        <NavLink class="nav-link" href="logowanie" style="@(!IsSignedIn ? "visibility:visible;" : "display:none;")">Logowanie</NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="rejestracja" style="@(!IsSigned ? "visibility:visible;" : "display:none;")">Rejestracja</NavLink>
+                        <NavLink class="nav-link" href="rejestracja" style="@(!IsSignedIn ? "visibility:visible;" : "display:none;")">Rejestracja</NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" style="@(IsSigned ? "visibility:visible;" : "visibility:hidden;")" href="konto">konto</NavLink>
+                        <NavLink class="nav-link" style="@(IsSignedIn ? "visibility:visible;" : "visibility:hidden;")" href="konto">Konto</NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" style="@(IsSigned ? "visibility:visible;" : "visibility:hidden;")" href="wyloguj">Wyloguj</NavLink>
+                        <NavLink class="nav-link" style="@(IsSignedIn ? "visibility:visible;" : "visibility:hidden;")" href="wyloguj">Wyloguj</NavLink>
                     </li>
                 </ul>
             </div>
@@ -58,7 +58,20 @@
     </nav>
 </header>
 @code{
+    public bool IsSignedIn { get; set; }
     public bool IsExpanded { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        AppState.OnChange += SignInChanged;
+    }
+
+    private void SignInChanged()
+    {
+        IsSignedIn = AppState.IsSignedIn;
+        StateHasChanged();
+    }
 
     public void Toggle()
     {
@@ -68,5 +81,10 @@
     public void Collapse()
     {
         this.IsExpanded = false;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= SignInChanged;
     }
 }
