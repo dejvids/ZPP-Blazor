@@ -29,21 +29,28 @@ namespace ZPP_Blazor.Components
         {
             //Http.BaseAddress = new Uri(_prodBaseAddress);
             AppCtx.BaseAddress = _developBaseAddress;
+            AppCtx.BaseAddress = _prodBaseAddress;
 
             this.IsSigned = false;
 
             if (LocalStorage == null)
             {
-                Console.WriteLine("localstorage is null");
+#if Debug
+                Console.WriteLine("localstorage is null"); 
+#endif
             }
             var jwt = await LocalStorage.GetItemAsync<JsonWebToken>("token");
             if (jwt != null)
             {
-                Console.WriteLine("Expires:" + jwt.Expires);
+#if Debug
+                Console.WriteLine("Expires:" + jwt.Expires); 
+#endif
                 var currentTimeStamp = DateTime.UtcNow.ToTimestamp();
                 if (jwt.Expires > currentTimeStamp)
                 {
-                    Console.WriteLine("Czas tokena: " + jwt.Expires + "Czas UTC " + currentTimeStamp);
+#if Debug
+                    Console.WriteLine("Czas tokena: " + jwt.Expires + "Czas UTC " + currentTimeStamp); 
+#endif
                     this.IsSigned = true;
                 }
                 else

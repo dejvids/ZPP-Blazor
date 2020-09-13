@@ -85,7 +85,7 @@
                     <div class="modal-header">
                         @if (SelectedLecture?.Code == null)
                         {
-                            <h5 *ngIf="!SelectedLecture.code">Generowanie kodu</h5>
+                            <h5>Generowanie kodu</h5>
                         }
                         else
                         {
@@ -184,10 +184,14 @@
                                 @foreach (var lecture in FutureLectures)
                                 {
                                 <li class="list-group-item">
-                                    <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy")</span>
-                                    <a class="btn btn-link" href="/zajecia/@lecture.Id">
+                                    <span class="badge badge-primary badge-pill">@lecture.Date.ToString("dd-MM-yyyy") </span>
+                                    <span>
+                                    <a class="btn btn-link" style="text-align:left;" href="/zajecia/@lecture.Id">
                                         @lecture.Name
                                     </a>
+                                    </span>
+                                    <div style="float:right; width:auto;">
+
                                     <button class="btn btn-danger horizontal-right" @onclick="()=> ShowDeleteConfirmation(lecture)">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                         Usuń
@@ -196,6 +200,7 @@
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                         Edytuj
                                     </button>
+                                    </div>
                                 </li>
                                 }
                             </ul>

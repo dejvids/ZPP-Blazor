@@ -44,6 +44,7 @@ namespace ZPP_Blazor.Components.SignUp
             if (result == null)
             {
                 Message = "Wystąpił błąd podczas rejestracji";
+                IsAlertVisible = true;
                 return;
             }
 
@@ -56,11 +57,13 @@ namespace ZPP_Blazor.Components.SignUp
             {
                 Console.WriteLine(ex.Message);
                 Message = "Wystąpił błąd podczas rejestracji";
+                IsAlertVisible = true;
                 return;
             }
             if(!response.Success)
             {
                 Message = response.Message;
+                IsAlertVisible = true;
                 return;
             }
             SuccessfullyRegistered = true;

@@ -28,7 +28,9 @@ namespace ZPP_Blazor.Components.Lecture
         {
             await base.OnInitializedAsync();
 
-            Console.WriteLine("Id = " + Id);
+#if Debug
+            Console.WriteLine("Id = " + Id); 
+#endif
             try
             {
                 CurrentLecture = await _lectureService.GetLecture(int.Parse(Id));
@@ -38,15 +40,21 @@ namespace ZPP_Blazor.Components.Lecture
                 }
                 if (IsSigned)
                 {
-                    Console.WriteLine("IsSigned");
+#if Debug
+                    Console.WriteLine("IsSigned"); 
+#endif
                     var userLectures = await _lectureService.GetMyLectures();
                     foreach (var l in userLectures)
                     {
-                        Console.WriteLine(l.Id);
+#if Debug
+                        Console.WriteLine(l.Id); 
+#endif
                     }
                     if (userLectures.Any(x => x.Id == int.Parse(Id)))
                     {
-                        Console.WriteLine("Is joined");
+#if Debug
+                        Console.WriteLine("Is joined"); 
+#endif
                         UserAlreadyJoined = true;
                     }
                     else
@@ -58,7 +66,9 @@ namespace ZPP_Blazor.Components.Lecture
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
                 UriHelper.NavigateTo("/zajecia/strona/1");
             }
         }
@@ -72,7 +82,9 @@ namespace ZPP_Blazor.Components.Lecture
                 var response = await Http.PostAsync("/api/lectures/participants/add-me", content);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine("Joined to lecture ");
+#if Debug
+                    Console.WriteLine("Joined to lecture "); 
+#endif
                     Message = "Właśnie zapisałeś się na zajęcia!";
                     HasJoined = true;
                 }
@@ -89,7 +101,9 @@ namespace ZPP_Blazor.Components.Lecture
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
                 Message = "Wystąpił nieoczekiwany błąd serwera :(";
                 HasError = true;
             }

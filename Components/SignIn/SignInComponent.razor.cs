@@ -40,7 +40,9 @@ namespace ZPP_Blazor.Components.SignIn
         {
             ErrorMessage = string.Empty;
             IsAlertVisible = false;
-            Console.WriteLine("Logowanie");
+#if Debgu
+            Console.WriteLine("Logowanie"); 
+#endif
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
             {
                 ErrorMessage = "Podaj login i hasło";
@@ -48,18 +50,26 @@ namespace ZPP_Blazor.Components.SignIn
                 return;
             }
             var user = new LoginUser { Login = Login, Password = Password };
-            Console.WriteLine("User: " + user.Login + " " + user.Password);
+#if Debug
+            Console.WriteLine("User: " + user.Login + " " + user.Password); 
+#endif
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var result = await Http.PostAsync(@"/api/sign-in", content);
-            Console.WriteLine(result);
+#if Debug
+            Console.WriteLine(result); 
+#endif
 
             if (result == null)
             {
-                Console.WriteLine("Result null");
+#if Debug
+                Console.WriteLine("Result null"); 
+#endif
                 return;
             }
             var response = await result.Content?.ReadAsStringAsync();
-            Console.WriteLine(response);
+#if Debug
+            Console.WriteLine(response); 
+#endif
             if (response == null)
             {
                 ErrorMessage = "Logowanie zakończone niepowodzeniem.";
@@ -72,9 +82,13 @@ namespace ZPP_Blazor.Components.SignIn
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
-            Console.WriteLine($"obj:{obj}");
+#if Debug
+            Console.WriteLine($"obj:{obj}"); 
+#endif
 
             if (obj == null)
             {
@@ -100,9 +114,13 @@ namespace ZPP_Blazor.Components.SignIn
 
         public void SignInFacebook()
         {
-            Console.WriteLine("Facebook login");
+#if Debug
+            Console.WriteLine("Facebook login"); 
+#endif
             string url = $"{AppCtx.BaseAddress}/sign-in-facebook/blazor";
-            Console.WriteLine(url);
+#if Debug
+            Console.WriteLine(url); 
+#endif
             UriHelper.NavigateTo(url);
             // await HandleSignIn(result);
         }

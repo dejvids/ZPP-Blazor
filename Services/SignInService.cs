@@ -20,7 +20,9 @@ namespace ZPP_Blazor.Services
                 await SetUserToken(result.Token);
                 return true;
             }
-            Console.WriteLine(result.Message);
+#if Debug
+            Console.WriteLine(result.Message); 
+#endif
             return false;
         }
 

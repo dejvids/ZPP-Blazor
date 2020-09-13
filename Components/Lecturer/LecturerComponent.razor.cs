@@ -46,7 +46,9 @@ namespace ZPP_Blazor.Components.Lecturer
                 return;
             }
             await base.OnInitializedAsync();
-            Console.WriteLine("Navigated to me");
+#if Debug
+            Console.WriteLine("Navigated to me"); 
+#endif
             await LoadUserDataAsync();
             await LoadUseLectures();
             this.StateHasChanged();
@@ -56,16 +58,24 @@ namespace ZPP_Blazor.Components.Lecturer
         {
             if (Http == null)
             {
-                Console.WriteLine("Http null");
+#if Debug
+                Console.WriteLine("Http null"); 
+#endif
                 return;
             }
-            Console.WriteLine("AuthorizatioN: " + Http.DefaultRequestHeaders.Authorization);
+#if Debug
+            Console.WriteLine("AuthorizatioN: " + Http.DefaultRequestHeaders.Authorization); 
+#endif
             var response = await Http.GetAsync(@"/api/me");
-            Console.WriteLine("request sent");
+#if Debug
+            Console.WriteLine("request sent"); 
+#endif
 
             if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                Console.WriteLine("Load user OK");
+#if Debug
+                Console.WriteLine("Load user OK"); 
+#endif
                 string jsonContent = await response.Content.ReadAsStringAsync();
                 User = JsonSerializer.Deserialize<User>(jsonContent, AppCtx.JsonOptions);
                 AppCtx.CurrentUser = User;
@@ -73,11 +83,15 @@ namespace ZPP_Blazor.Components.Lecturer
 
             else if (response == null)
             {
-                Console.WriteLine("No response");
+#if Debug
+                Console.WriteLine("No response"); 
+#endif
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                Console.WriteLine("Unauthorized");
+#if Debug
+                Console.WriteLine("Unauthorized"); 
+#endif
                 UriHelper.NavigateTo("/");
             }
         }
@@ -87,11 +101,15 @@ namespace ZPP_Blazor.Components.Lecturer
             try
             {
                 UserLectures = (await _lectureService.GetMyLectures()).ToList();
-                Console.WriteLine("Futere lectures " + UserLectures.Count);
+#if Debug
+                Console.WriteLine("Futere lectures " + UserLectures.Count); 
+#endif
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
 
             ActiveLectures = UserLectures.Where(x => x.Date <= DateTime.Now && x.Date.AddDays(30) >= DateTime.Now && !x.Present).ToList();
@@ -119,7 +137,9 @@ namespace ZPP_Blazor.Components.Lecturer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
                 FutureLectures.Remove(SelectedLecture);
             }
         }
@@ -167,11 +187,15 @@ namespace ZPP_Blazor.Components.Lecturer
                     CodeIsValid = CodeValidTo > DateTime.Now.ToLocalDateTime();
                     StateHasChanged();
                 }
-                Console.WriteLine(jsonResult);
+#if Debug
+                Console.WriteLine(jsonResult); 
+#endif
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 
@@ -193,7 +217,9 @@ namespace ZPP_Blazor.Components.Lecturer
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+#if Debug
+                    Console.WriteLine(ex.Message); 
+#endif
                 }
             }
         }

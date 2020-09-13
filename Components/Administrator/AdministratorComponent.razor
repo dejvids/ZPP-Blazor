@@ -18,7 +18,8 @@
     .align-right {
         float: right;
     }
-    .std-margin{
+
+    .std-margin {
         margin-top: 30px;
     }
 </style>
@@ -95,14 +96,18 @@
             @foreach (var user in Users)
             {
                 <li class="list-group-item">
-                    @user.Login - @user.Name @user.Surname
-                    <button class="btn btn-danger horizontal-right btn-std-margin @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "")" @onclick="()=> ShowDeleteConfirmation(user)">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                        Usuń
-                    </button>
-                    <button class="btn btn-primary horizontal-right btn-std-margin btn-regular @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "") " @onclick="()=> ShowSelectRoleDialog(user)">
-                        @(((Enums.Role)user.RoleId).ToString())
-                    </button>
+                    <span style="text-align:left;">
+                        @user.Login - @user.Name @user.Surname
+                    </span>
+                    <span style="width: auto; float:right"> 
+                        <button class="btn btn-danger horizontal-right btn-std-margin @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "")" @onclick="()=> ShowDeleteConfirmation(user)">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            Usuń
+                        </button>
+                        <button class="btn btn-primary horizontal-right btn-std-margin btn-regular @(!(user.RoleId == (int)Enums.Role.Student || user.RoleId == (int)Enums.Role.Wykładowca) ? "disabled" : "") " @onclick="()=> ShowSelectRoleDialog(user)">
+                            @(((Enums.Role)user.RoleId).ToString())
+                        </button>
+                    </span>
                 </li>
             }
         </ul>

@@ -69,7 +69,9 @@ namespace ZPP_Blazor.Components.NewLecture
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
                     string message = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(message);
+#if Debug
+                    Console.WriteLine(message); 
+#endif
                     Message = message;
                     IsAlertVisible = true;
                     StateHasChanged();
@@ -77,7 +79,9 @@ namespace ZPP_Blazor.Components.NewLecture
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Adding lecture failed " + ex.Message);
+#if Debug
+                Console.WriteLine("Adding lecture failed " + ex.Message); 
+#endif
             }
             finally
             {

@@ -20,11 +20,11 @@ namespace ZPP_Blazor.Components.Home
         IJSRuntime JSRuntime { get; set; }
 
         public Models.Lecture FirstPromoting
-            => PromotingLectures?.ElementAt<Models.Lecture>(0);
+            => PromotingLectures?.ElementAtOrDefault(0);
         public Models.Lecture SecondPromoting
-           => PromotingLectures?.ElementAt<Models.Lecture>(1);
+           => PromotingLectures?.ElementAtOrDefault(1);
         public Models.Lecture ThirdPromoting
-           => PromotingLectures?.ElementAt<Models.Lecture>(2);
+           => PromotingLectures?.ElementAtOrDefault(2);
         public List<Models.Lecture> SearchedLectures { get; set; }
         public bool DataLoaded { get; set; }
         public bool Searched { get; set; }
@@ -38,10 +38,14 @@ namespace ZPP_Blazor.Components.Home
             PromotingLectures = new List<Models.Lecture> { new Models.Lecture(), new Models.Lecture(), new Models.Lecture() };
             SearchedLectures = new List<Models.Lecture>();
             await base.OnInitializedAsync();
-            Console.WriteLine("OnInit Home component");
+#if Debug
+            Console.WriteLine("OnInit Home component"); 
+#endif
             if (Http == null)
             {
-                Console.WriteLine("Http is null");
+#if Deubug
+                Console.WriteLine("Http is null"); 
+#endif
             }
             try
             {
@@ -51,13 +55,17 @@ namespace ZPP_Blazor.Components.Home
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Deubug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 
         public async Task Search()
         {
-            Console.WriteLine("Submit " + Phrase);
+#if Debug
+            Console.WriteLine("Submit " + Phrase); 
+#endif
             if (string.IsNullOrEmpty(Phrase) || Phrase.Length < 3)
             {
                 Searched = false;
@@ -80,7 +88,9 @@ namespace ZPP_Blazor.Components.Home
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 

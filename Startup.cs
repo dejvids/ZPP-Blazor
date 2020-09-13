@@ -9,6 +9,7 @@ namespace ZPP_Blazor
     public class Startup
     {
         private static string m_devBaseAddress = "http://localhost:5000";
+        string _prodBaseAddress = @"https://zpp-api.azurewebsites.net";
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBlazoredLocalStorage();
