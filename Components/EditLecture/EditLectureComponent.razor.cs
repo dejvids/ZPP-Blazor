@@ -10,6 +10,7 @@ namespace ZPP_Blazor.Components.EditLecture
     {
         [Inject]
         protected ILectureService _lectureService { get; set; }
+        [Inject]
         protected IJSRuntime JSRuntime { get; set; }
         [Parameter]
         public string Id { get; set; }
@@ -73,7 +74,9 @@ namespace ZPP_Blazor.Components.EditLecture
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 
@@ -101,7 +104,9 @@ namespace ZPP_Blazor.Components.EditLecture
                 Message = "Niepoprawna godzina zajęć";
                 return false;
             }
-            Console.WriteLine("Date is " + Date + "Today " + DateTime.Today);
+#if Debug
+            Console.WriteLine("Date is " + Date + "Today " + DateTime.Today); 
+#endif
             if (Date < DateTime.Today.AddDays(1))
             {
                 Message = "Niepoprawna data zajęć";
@@ -126,7 +131,9 @@ namespace ZPP_Blazor.Components.EditLecture
             catch (Exception ex)
             {
                 Date = DateTime.Now;
-                Console.WriteLine("Date parse exception" + ex.Message);
+#if Debug
+                Console.WriteLine("Date parse exception" + ex.Message); 
+#endif
             }
             StateHasChanged();
         }

@@ -27,7 +27,7 @@ namespace ZPP_Blazor.Services
                 if (result == null)
                     throw new Exception("Błąd serwera");
                 string content = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<Lecture>(content);
+                return JsonSerializer.Deserialize<Lecture>(content, AppCtx.JsonOptions);
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
+                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
                     return lectures;
                 }
                 catch (Exception ex)
@@ -76,7 +76,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync());
+                    var lectures = JsonSerializer.Deserialize<List<Models.Lecture>>(await response.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
                     return lectures;
                 }
                 catch (Exception ex)
@@ -99,7 +99,7 @@ namespace ZPP_Blazor.Services
             {
                 try
                 {
-                    return JsonSerializer.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync());
+                    return JsonSerializer.Deserialize<List<UserLecture>>(await response.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
                 }
                 catch (Exception ex)
                 {

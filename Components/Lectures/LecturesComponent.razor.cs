@@ -62,23 +62,31 @@ namespace ZPP_Blazor.Components.Lectures
 
         private async Task LoadData()
         {
+#if Debug
             Console.WriteLine("Loading lectures");
             Console.WriteLine("Current page " + CurrentPage);
             Console.WriteLine("Order " + Order);
-            Console.WriteLine("Phrase " + Phrase);
+            Console.WriteLine("Phrase " + Phrase); 
+#endif
             IsDataLoaded = false;
             StateHasChanged();
             try
             {
                 Lectures = (await _lectureService.GetLectures(CurrentPage, Phrase, Order)).ToList();
                 await GetNumberOfPages();
-                Console.WriteLine("Pages " + Pages);
+#if Debug
+                Console.WriteLine("Pages " + Pages); 
+#endif
                 StateHasChanged();
-                Console.WriteLine("Lectures loaded");
+#if Debug
+                Console.WriteLine("Lectures loaded"); 
+#endif
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
             IsDataLoaded = true;
             StateHasChanged();
@@ -99,7 +107,9 @@ namespace ZPP_Blazor.Components.Lectures
 
             CurrentPage = int.TryParse(strona, out int page) ? page : 1;
             StateHasChanged();
-            Console.WriteLine("Current page " + CurrentPage);
+#if Debug
+            Console.WriteLine("Current page " + CurrentPage); 
+#endif
             await LoadData();
         }
 

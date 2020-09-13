@@ -24,7 +24,7 @@ namespace ZPP_Blazor.Components.Opinions
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            var token = await LocalStorage.GetItem<JsonWebToken>("token");
+            var token = await LocalStorage.GetItemAsync<JsonWebToken>("token");
 
             if (token == null || token.Expires < DateTime.Now.ToTimestamp() || !token.Role.Equals("lecturer", StringComparison.InvariantCultureIgnoreCase))
             {

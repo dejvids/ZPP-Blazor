@@ -60,7 +60,7 @@
                 <h2>Opis zajęć</h2>
                 <p>@CurrentLecture.Description</p>
             </div>
-            @if (UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == false)
+            @if (UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == false && HasJoined == false)
             {
                 <button class="btn btn-primary btn-lg btn-ok" @onclick="Join">Zapisz się!</button>
             }
@@ -69,7 +69,7 @@
                 <div
                       class="alert alert-secondary">Zapisy na zajęcia zostały zakończone</div>
             }
-            else if(UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == true)
+            else if(UserAlreadyJoined.HasValue && UserAlreadyJoined.Value == true )
             {
                 <div class="alert alert-info">Jesteś zapisany na te zajęcia</div>
             }

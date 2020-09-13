@@ -1,21 +1,30 @@
-using Blazor.Extensions.Storage;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using ZPP_Blazor.Services;
 
 namespace ZPP_Blazor
 {
     public class Startup
     {
+        private static string m_devBaseAddress = "http://localhost:5000";
+        string _prodBaseAddress = @"https://zpp-api.azurewebsites.net";
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add Blazor.Extensions.Storage
-            // Both SessionStorage and LocalStorage are registered
-            services.AddStorage();
+            services.AddBlazoredLocalStorage();
             services.AddTransient<SignInService>();
             services.AddTransient<ILectureService,LectureService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IOpinionService, OpinionService>();
+            services.AddSingleton<AppState>();
+            services.AddScoped<HttpClient>(s =>
+            {
+                return new HttpClient
+                {
+                    BaseAddress = new System.Uri(m_devBaseAddress)
+                };
+            });
         }
         public void Configure(IComponentsApplicationBuilder app)
         {

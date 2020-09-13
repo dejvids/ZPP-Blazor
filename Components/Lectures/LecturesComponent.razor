@@ -5,15 +5,19 @@
     .align-right {
         float: right;
     }
+    .card-title-bold {
+        font-weight: bold;
+    }
+
 </style>
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto mt-3">
             <div class="form-row">
-                <div class="col-12 col-md-9 mb-md-0">
-                    <input type="text" bind="Phrase" id="search-box" @onkeypress="OnKeyPressed" name="searchedPhrase" class="form-control form-control-lg" placeholder="Czego szukasz?" />
+                <div class="col-md-9 mb-2 mb-md-0">
+                    <input type="text" @bind="Phrase" id="search-box" @onkeypress="OnKeyPressed" name="searchedPhrase" class="form-control form-control-lg" placeholder="Czego szukasz?" />
                 </div>
-                <div class="col-12 col-md-3">
+                <div class="col-md-3 ">
                     <button type="submit" @onclick="OnSearch" class="btn btn-block btn-lg btn-primary">Wyszukaj</button>
                 </div>
             </div>
@@ -41,10 +45,10 @@
                 <div class="row container-margin-top">
                     @for (int j = (3 * i) - 3; j < Math.Min(i * 3, Lectures.Count); j++)
                     {
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-2 mb-md-0">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h2 class="card-title">@Lectures[j].Name</h2>
+                                    <h5 class="card-title card-title-bold">@Lectures[j].Name</h5>
                                     <p class="card-text">@Lectures[j].Description</p>
                                 </div>
                                 <div class="card-footer">

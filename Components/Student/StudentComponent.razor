@@ -72,7 +72,7 @@
                         <p>Aby potwierdzić obecność wpisz kod podany przez prowadzącego zajęcia</p>
                         <div class="form-group">
                             <label for="code">Kod:</label>
-                            <input type="text" class="form-control" id="code" bind="ConfirmationCode" />
+                            <input type="text" class="form-control" id="code" @bind="ConfirmationCode" />
                         </div>
                         <p style="color: rgb(148, 72, 72)">@ErrorMessage</p>
                     </div>
@@ -180,7 +180,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlTextarea1 font-weight-bold mt-2">Komentarz</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Napisz komentarz" bind="Comment"></textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Napisz komentarz" @bind="Comment"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

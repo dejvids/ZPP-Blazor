@@ -23,6 +23,9 @@ namespace ZPP_Blazor.Components.SignIn
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
 
+        [Inject]
+        public AppState AppState { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -37,7 +40,9 @@ namespace ZPP_Blazor.Components.SignIn
         {
             ErrorMessage = string.Empty;
             IsAlertVisible = false;
-            Console.WriteLine("Logowanie");
+#if Debgu
+            Console.WriteLine("Logowanie"); 
+#endif
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
             {
                 ErrorMessage = "Podaj login i hasło";
@@ -45,26 +50,45 @@ namespace ZPP_Blazor.Components.SignIn
                 return;
             }
             var user = new LoginUser { Login = Login, Password = Password };
-            Console.WriteLine("User: " + user.Login + " " + user.Password);
-            var content = new StringContent(JsonSerializer.Serialize(user));
+#if Debug
+            Console.WriteLine("User: " + user.Login + " " + user.Password); 
+#endif
+            var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var result = await Http.PostAsync(@"/api/sign-in", content);
-            Console.WriteLine(result);
-            if (SignInService is null)
-            {
-                Console.WriteLine("Sign in null");
-                return;
-            }
+#if Debug
+            Console.WriteLine(result); 
+#endif
+
             if (result == null)
             {
-                Console.WriteLine("Result null");
+#if Debug
+                Console.WriteLine("Result null"); 
+#endif
                 return;
             }
             var response = await result.Content?.ReadAsStringAsync();
+#if Debug
+            Console.WriteLine(response); 
+#endif
             if (response == null)
             {
                 ErrorMessage = "Logowanie zakończone niepowodzeniem.";
             }
-            var obj = JsonSerializer.Deserialize<SignInResult>(response);
+
+            SignInResult obj = null;
+            try
+            {
+                obj = JsonSerializer.Deserialize<SignInResult>(response, AppCtx.JsonOptions);
+            }
+            catch (Exception ex)
+            {
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
+            }
+#if Debug
+            Console.WriteLine($"obj:{obj}"); 
+#endif
 
             if (obj == null)
             {
@@ -76,7 +100,8 @@ namespace ZPP_Blazor.Components.SignIn
                 await SignInService.HandleSignIn(obj);
                 // UriHelper.NavigateTo("/profil");
                 IsSigned = true;
-                await JSRuntime.InvokeAsync<bool>("reload", "/konto");
+                AppState.SetSignInStatus(true);
+                UriHelper.NavigateTo("/konto");
             }
             else
             {
@@ -89,9 +114,14 @@ namespace ZPP_Blazor.Components.SignIn
 
         public void SignInFacebook()
         {
-            Console.WriteLine("Facebook login");
-
-            UriHelper.NavigateTo($"{AppCtx.BaseAddress}/sign-in-facebook/blazor");
+#if Debug
+            Console.WriteLine("Facebook login"); 
+#endif
+            string url = $"{AppCtx.BaseAddress}/sign-in-facebook/blazor";
+#if Debug
+            Console.WriteLine(url); 
+#endif
+            UriHelper.NavigateTo(url);
             // await HandleSignIn(result);
         }
 

@@ -21,6 +21,7 @@ namespace ZPP_Blazor.Services
         public async Task<List<Opinion>> GetOpinions(int lectureId)
         {
             var list = new List<Opinion>();
+
             try
             {
                 var result = await _http.GetAsync($"/api/opinions/lecture/{lectureId}");
@@ -28,7 +29,7 @@ namespace ZPP_Blazor.Services
                 {
                     var content = await result.Content.ReadAsStringAsync();
 
-                    return JsonSerializer.Deserialize<List<Opinion>>(content);
+                    return JsonSerializer.Deserialize<List<Opinion>>(content, AppCtx.JsonOptions);
                 }
                 return list;
             }

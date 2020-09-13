@@ -30,9 +30,11 @@ namespace ZPP_Blazor.Services
                 {
                     throw new Exception(await result.Content.ReadAsStringAsync());
                 }
-                Console.WriteLine(result);
+#if Debug
+                Console.WriteLine(result); 
+#endif
                 string jsonCOntent = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<UserDetail>>(jsonCOntent);
+                return JsonSerializer.Deserialize<List<UserDetail>>(jsonCOntent, AppCtx.JsonOptions);
             }
             catch(Exception)
             {

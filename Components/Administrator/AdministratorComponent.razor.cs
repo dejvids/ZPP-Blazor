@@ -50,7 +50,9 @@ namespace ZPP_Blazor.Components.Administrator
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 
@@ -61,24 +63,30 @@ namespace ZPP_Blazor.Components.Administrator
                 var result = await Http.GetAsync("/api/companies");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Companies = JsonSerializer.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync());
+                    Companies = JsonSerializer.Deserialize<List<Company>>(await result.Content.ReadAsStringAsync(), AppCtx.JsonOptions);
                     SelectedCompany = Companies.FirstOrDefault();
                     StateHasChanged();
                 }
                 else
                 {
-                    Console.WriteLine(await result.Content.ReadAsStringAsync());
+#if Debug
+                    Console.WriteLine(await result.Content.ReadAsStringAsync()); 
+#endif
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
         }
 
         protected async Task SetRole()
         {
-            Console.WriteLine(SelectedCompany.Name + " " + SelectedUser.CompanyName);
+#if Debug
+            Console.WriteLine(SelectedCompany.Name + " " + SelectedUser.CompanyName); 
+#endif
             if (SelectedRole == Role.Wykładowca && SelectedCompany.Id == SelectedUser.CompanyId)
             {
                 ShowUserRole = false;
@@ -91,7 +99,7 @@ namespace ZPP_Blazor.Components.Administrator
                 StateHasChanged();
                 return;
             }
-            Console.WriteLine("OK");
+
             var grantContent = new GrantRoleDto()
             {
                 UserId = SelectedUser.Id,
@@ -105,11 +113,12 @@ namespace ZPP_Blazor.Components.Administrator
                 ShowUserRole = false;
                 await LoadUsers();
                 StateHasChanged();
-                Console.WriteLine("Role granted");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
 
         }
@@ -129,14 +138,19 @@ namespace ZPP_Blazor.Components.Administrator
 
         protected void ShowDeleteConfirmation(UserDetail user)
         {
-            DeleteConfVisible = true;
-            SelectedUser = user;
-            StateHasChanged();
+            if (user.RoleId == (int)Role.Student || user.RoleId == (int)Role.Wykładowca)
+            {
+                DeleteConfVisible = true;
+                SelectedUser = user;
+                StateHasChanged(); 
+            }
         }
 
         protected async Task DeleteUser()
         {
-            Console.WriteLine("Deleting user");
+#if Debug
+            Console.WriteLine("Deleting user"); 
+#endif
             try
             {
                 await Http.DeleteAsync($"/api/users/{SelectedUser.Id}");
@@ -144,7 +158,9 @@ namespace ZPP_Blazor.Components.Administrator
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+#if Debug
+                Console.WriteLine(ex.Message); 
+#endif
             }
             finally
             {
