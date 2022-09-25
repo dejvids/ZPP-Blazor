@@ -2,7 +2,9 @@
 Blazor app made in early version of framework. Eventually migrated to preview 3.1 and .net core 3.1.
 Main purpose of the project was to examine the possibilities and limitations of new C# SPA framework.
 
-App works with REST API exposed by ZPP-Api application, avalible also on [ZPP-API](https://zpp-api.azurewebsites.net/swagger/index.html).
+App works with REST API exposed by ZPP-Api application
+
+[ZPP-API](https://github.com/dejvids/zpp-api).
 
 ## Used third-party libraries
 - [Blazored.LocalStorage](https://github.com/Blazored/LocalStorage)
